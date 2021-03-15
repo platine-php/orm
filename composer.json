@@ -1,0 +1,66 @@
+{
+    "name": "platine-php/orm",
+    "description": "Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["application", "mapper", "activerecord", "framework", "php", "platine", "database", "pdo", "query", "orm"],
+    "authors": [
+        {
+            "name": "NGUEREZA Tony",
+            "email": "nguerezatony@gmail.com",
+            "homepage": "http://www.iacademy.cf",
+            "role": "developer"
+        }
+    ],
+
+    "support": {
+        "issues": "https://github.com/platine-php/orm/issues",
+        "source": "https://github.com/platine-php/orm"
+    },
+	
+    "require": {
+        "php": "^7.4 || ^8",
+        "platine-php/database": "1.0.x-dev"
+    },
+	
+    "require-dev": {
+        "phpmd/phpmd": "@stable",
+        "phpstan/phpstan": "0.12.x-dev",
+        "phpunit/phpunit": "^9.5",
+        "platine-php/test-tools": "1.0.x-dev",
+        "squizlabs/php_codesniffer": "3.*"
+    },
+    
+    "autoload": {
+        "psr-4":{
+            "Platine\\Orm\\": "src/"
+        }
+    },
+    
+    "autoload-dev": {
+        "psr-4":{
+            "Platine\\Test\\": "tests"
+        }
+    },
+    
+    "config": {
+        "sort-packages": true
+    },
+    
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "1.0.x-dev"
+        }
+    },
+
+    "scripts": {
+        "test": "phpunit --colors=always",
+        "static": "phpstan analyze",
+        "check": "phpcs",
+        "check-fix": "phpcbf",
+        "analyze": "phpmd src xml phpmd.xml"
+    },
+	
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
