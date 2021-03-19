@@ -28,16 +28,33 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file ShareOne.php
+ *
+ *  The ShareOne class
+ *
+ *  @package    Platine\Orm\Relation
+ *  @author Platine Developers Team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Orm\Exception;
-
-use RuntimeException;
+namespace Platine\Orm\Relation;
 
 /**
- * Class PropertyNotFoundException
- * @package Platine\Orm\Exception
+ * Class ShareOne
+ * @package Platine\Orm\Relation
  */
-class PropertyNotFoundException extends RuntimeException
+class ShareOne extends ShareRelation
 {
+
+    /**
+     * {@inheritedoc}
+     */
+    protected bool $hasMany = false;
 }

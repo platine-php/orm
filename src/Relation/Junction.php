@@ -28,16 +28,68 @@
  * SOFTWARE.
  */
 
+/**
+ *  @file Junction.php
+ *
+ *  The Junction class
+ *
+ *  @package    Platine\Orm\Relation
+ *  @author Platine Developers Team
+ *  @copyright  Copyright (c) 2020
+ *  @license    http://opensource.org/licenses/MIT  MIT License
+ *  @link   http://www.iacademy.cf
+ *  @version 1.0.0
+ *  @filesource
+ */
+
 declare(strict_types=1);
 
-namespace Platine\Orm\Exception;
-
-use RuntimeException;
+namespace Platine\Orm\Relation;
 
 /**
- * Class PropertyNotFoundException
- * @package Platine\Orm\Exception
+ * Class Junction
+ * @package Platine\Orm\Relation
  */
-class PropertyNotFoundException extends RuntimeException
+class Junction
 {
+    /**
+     *
+     * @var array<string, string>
+     */
+    private array $columns = [];
+
+    /**
+     * The name of junction table
+     * @var string
+     */
+    private string $table;
+
+    /**
+     * Create new instance
+     * @param string $table
+     * @param array<string, string> $columns
+     */
+    public function __construct(string $table, array $columns)
+    {
+        $this->table = $table;
+        $this->columns = $columns;
+    }
+
+    /**
+     *
+     * @return array<string, string>
+     */
+    public function columns(): array
+    {
+        return $this->columns;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function table(): string
+    {
+        return $this->table;
+    }
 }
