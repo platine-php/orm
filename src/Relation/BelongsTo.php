@@ -46,6 +46,7 @@ declare(strict_types=1);
 
 namespace Platine\Orm\Relation;
 
+
 use Platine\Database\Query\QueryStatement;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
@@ -54,6 +55,8 @@ use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\Proxy;
 use Platine\Orm\Query\EntityQuery;
 use Platine\Orm\Query\Query;
+use Platine\Orm\Relation\Relation;
+use Platine\Orm\Relation\RelationLoader;
 
 /**
  * Class BelongsTo
@@ -93,7 +96,7 @@ class BelongsTo extends Relation
      * {@inheritedoc}
      * @return RelationLoader
      */
-    public function getLoader(EntityManager $manager, EntityMapper $owner, $options): RelationLoader
+    public function getLoader(EntityManager $manager, EntityMapper $owner, array $options): RelationLoader
     {
         $related = $manager->getEntityMapper($this->entityClass);
 
@@ -101,7 +104,9 @@ class BelongsTo extends Relation
             $this->foreignKey = $related->getForeignKey();
         }
 
+        /** @var array<string, array<mixed>> $ids */
         $ids = [];
+        
         foreach ($options['results'] as $result) {
             foreach ($this->foreignKey->getInverseValue($result, true) as $pkColumn => $pkValue) {
                 $ids[$pkColumn][] = $pkValue;

@@ -65,7 +65,7 @@ abstract class Relation
 
     /**
      * The entity class
-     * @var string
+     * @var class-string
      */
     protected string $entityClass;
 
@@ -77,7 +77,7 @@ abstract class Relation
 
     /**
      * Create new instance
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @param ForeignKey|null $foreignKey
      */
     public function __construct(string $entityClass, ?ForeignKey $foreignKey = null)

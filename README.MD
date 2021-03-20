@@ -99,6 +99,7 @@ All notable changes to [opis/orm](https://github.com/opis/orm) are documented be
 - Rename method **assign** to **fill**
 - Rename method **stale** to **refresh**
 - Add methods **hasColumn** and **hasRelated**
+- Remove parameter **$callback** of method **getRelated**
 
 ##### Class DataMapper
 - Rename method **assign** to **fill**
@@ -110,6 +111,8 @@ All notable changes to [opis/orm](https://github.com/opis/orm) are documented be
 
 ##### Class Query
 - Rename attribute **have** to **havingStatement**
+- Rename method **onlySoftDeleted** to **onlyDeleted**
+- Rename method **withSoftDeleted** to **withDeleted**
 
 ##### Class EntityQuery
 - Rename method **getLazyLoaders** to **getRelationLoaders**

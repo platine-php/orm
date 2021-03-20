@@ -170,20 +170,22 @@ class EntityQuery extends Query
                         ->all();
 
         $entities = [];
+        
+        if(is_array($results)){
+            $class = $this->mapper->getEntityClass();
+            $isReadOnly = $this->isReadOnly();
+            $loaders = $this->getRelationLoaders($results);
 
-        $class = $this->mapper->getEntityClass();
-        $isReadOnly = $this->isReadOnly();
-        $loaders = $this->getRelationLoaders($results);
-
-        foreach ($results as $result) {
-            $entities[] = new $class(
-                $this->manager,
-                $this->mapper,
-                $result,
-                $loaders,
-                $isReadOnly,
-                false
-            );
+            foreach ($results as $result) {
+                $entities[] = new $class(
+                    $this->manager,
+                    $this->mapper,
+                    $result,
+                    $loaders,
+                    $isReadOnly,
+                    false
+                );
+            }
         }
 
         return $entities;
@@ -433,10 +435,10 @@ class EntityQuery extends Query
 
     /**
      * Return the relations data loaders
-     * @param array<int, array<string, mixed>> $results
+     * @param array<int, mixed>|false $results
      * @return array<string, \Platine\Orm\Relation\RelationLoader>
      */
-    protected function getRelationLoaders(array $results): array
+    protected function getRelationLoaders($results): array
     {
         if (empty($this->with) || empty($results)) {
             return [];
@@ -458,7 +460,7 @@ class EntityQuery extends Query
                 'with' => isset($attributes[$with]['extra'])
                             ? $attributes[$with]['extra']
                             : [],
-                'immetiate' => $this->immediate
+                'immediate' => $this->immediate
             ]);
 
             if ($loader === null) {

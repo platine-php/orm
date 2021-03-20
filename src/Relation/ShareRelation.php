@@ -56,6 +56,11 @@ use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\Proxy;
 use Platine\Orm\Query\EntityQuery;
+use Platine\Orm\Query\Query;
+use Platine\Orm\Relation\ForeignKey;
+use Platine\Orm\Relation\Junction;
+use Platine\Orm\Relation\Relation;
+use Platine\Orm\Relation\RelationLoader;
 
 /**
  * Class ShareRelation
@@ -78,7 +83,7 @@ abstract class ShareRelation extends Relation
 
     /**
      * Create new instance
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @param ForeignKey|null $foreignKey
      * @param Junction|null $junction
      */
@@ -112,6 +117,7 @@ abstract class ShareRelation extends Relation
             $this->foreignKey = $owner->getForeignKey();
         }
 
+        /** @var array<string, mixed> $values */
         $values = [];
 
         foreach ($this->foreignKey->getValue($mapper->getRawColumns(), true) as $fkColumn => $fkValue) {
@@ -149,7 +155,10 @@ abstract class ShareRelation extends Relation
         if ($this->foreignKey === null) {
             $this->foreignKey = $owner->getForeignKey();
         }
-
+        
+        /** @var array<string, mixed> $values */
+        $values = [];
+        
         foreach ($this->foreignKey->getValue($mapper->getRawColumns(), true) as $fkColumn => $fkValue) {
             $values[$fkColumn] = $fkValue;
         }

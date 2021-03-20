@@ -108,7 +108,7 @@ class EntityManager
 
     /**
      * Get an instance of EntityQuery
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @return EntityQuery
      */
     public function query(string $entityClass): EntityQuery
@@ -151,7 +151,9 @@ class EntityManager
         $mapper = new EntityMapper($entityClass);
 
         $callback = $entityClass . '::mapEntity';
-        $callback($mapper);
+        if(is_callable($callback)){
+            $callback($mapper);
+        }
 
         return $this->entityMappers[$entityClass] = $mapper;
     }

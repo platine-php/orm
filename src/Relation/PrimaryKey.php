@@ -111,6 +111,7 @@ class PrimaryKey
                     : null;
         }
 
+        /** @var array<string, mixed> $values */
         $values = [];
         foreach ($this->columns as $column) {
             $values[$column] = isset($columns[$column])

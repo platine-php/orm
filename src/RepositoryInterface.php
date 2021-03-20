@@ -56,9 +56,19 @@ interface RepositoryInterface
 {
     /**
      * Return the instance of EntityQuery
+     * @param string|array<int, string> $with
+     * @param bool $immediate
      * @return EntityQuery
      */
-    public function query(): EntityQuery;
+    public function query($with = [], bool $immediate = false): EntityQuery;
+
+    /**
+     *
+     * @param string|array<int, string> $with
+     * @param bool $immediate
+     * @return $this
+     */
+    public function with($with, bool $immediate = false): self;
 
     /**
      * Create the instance of Entity
@@ -96,11 +106,26 @@ interface RepositoryInterface
      * @return Entity|null
      */
     public function find($id): ?Entity;
+    
+    /**
+     * Find one entity instance using some conditions
+     * @param array<string, mixed> $conditions
+     *
+     * @return Entity|null
+     */
+    public function findBy(array $conditions): ?Entity;
 
     /**
-     *
+     * Find the list of record using many primary key
      * @param mixed ...$ids
      * @return array<int, Entity>
      */
     public function findAll(...$ids): array;
+    
+    /**
+     * Find the list of record using some conditions
+     * @param array<string, mixed> $conditions
+     * @return array<int, Entity>
+     */
+    public function findAllBy(array $conditions): array;
 }

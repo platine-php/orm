@@ -94,7 +94,7 @@ class ForeignKey
 
     /**
      * Return the foreign key value(s)
-     * @param array<string, mixed> $columns
+     * @param array<string, array<mixed>> $columns
      * @param bool $map
      *
      * @return mixed|array<string, mixed>|null
@@ -108,7 +108,7 @@ class ForeignKey
                     ? $columns[$column[0]]
                     : null;
         }
-
+        /** @var array<string, mixed> $values */
         $values = [];
         foreach ($this->columns as $candidate => $column) {
             $values[$column] = isset($columns[$candidate])

@@ -46,10 +46,14 @@ declare(strict_types=1);
 
 namespace Platine\Orm\Relation;
 
+use Platine\Database\Query\QueryStatement;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\EntityMapper;
+use Platine\Orm\Mapper\Proxy;
+use Platine\Orm\Query\EntityQuery;
+use Platine\Orm\Query\Query;
 
 /**
  * Class HasRelation
@@ -66,7 +70,7 @@ abstract class HasRelation extends Relation
 
     /**
      * Create new instance
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @param ForeignKey|null $foreignKey
      */
     public function __construct(
@@ -108,7 +112,9 @@ abstract class HasRelation extends Relation
             $this->foreignKey = $owner->getForeignKey();
         }
 
+        /** @var array<string, array<mixed>> $ids */
         $ids = [];
+        
         $primaryKey = $owner->getPrimaryKey();
         foreach ($options['results'] as $result) {
             foreach ($primaryKey->getValue($result, true) as $pkColumn => $pkValue) {

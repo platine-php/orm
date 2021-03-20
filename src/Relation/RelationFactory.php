@@ -79,7 +79,7 @@ class RelationFactory
 
     /**
      * Set has one relation
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @param ForeignKey|null $foreignKey
      * @return Relation
      */
@@ -90,7 +90,7 @@ class RelationFactory
 
     /**
      * Set has many relation
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @param ForeignKey|null $foreignKey
      * @return Relation
      */
@@ -101,7 +101,7 @@ class RelationFactory
 
     /**
      * Set belongs to relation
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @param ForeignKey|null $foreignKey
      * @return Relation
      */
@@ -112,7 +112,7 @@ class RelationFactory
 
     /**
      * Set share one relation
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @param ForeignKey|null $foreignKey
      * @param Junction|null $junction
      * @return Relation
@@ -131,7 +131,7 @@ class RelationFactory
 
     /**
      * Set share many relation
-     * @param string $entityClass
+     * @param class-string $entityClass
      * @param ForeignKey|null $foreignKey
      * @param Junction|null $junction
      * @return Relation

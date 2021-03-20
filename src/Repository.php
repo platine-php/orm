@@ -48,6 +48,7 @@ namespace Platine\Orm;
 
 use Platine\Database\Connection;
 use Platine\Database\Query\Insert;
+use Platine\Database\Query\Update;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Exception\EntityStateException;
@@ -65,7 +66,7 @@ class Repository implements RepositoryInterface
 
     /**
      * The entity class
-     * @var string
+     * @var class-string
      */
     protected string $entityClass;
 
@@ -76,9 +77,21 @@ class Repository implements RepositoryInterface
     protected EntityManager $manager;
 
     /**
+     * The list of relation to load with the query
+     * @var array<int, string>
+     */
+    protected array $with = [];
+
+    /**
+     * Whether need load relation data immediately
+     * @var bool
+     */
+    protected bool $immediate = false;
+
+    /**
      * Create new instance
      * @param EntityManager $manager
-     * @param string $entityClass
+     * @param class-string $entityClass
      */
     public function __construct(EntityManager $manager, string $entityClass)
     {
@@ -89,9 +102,40 @@ class Repository implements RepositoryInterface
     /**
      * {@inheritedoc}
      */
+    public function query($with = [], bool $immediate = false): EntityQuery
+    {
+        if (empty($with) && !empty($this->with)) {
+            $with = $this->with;
+
+            $this->with = [];
+        }
+        $this->immediate = false;
+
+        return $this->manager->query($this->entityClass)
+                             ->with($with, $immediate);
+    }
+
+    /**
+     * {@inheritedoc}
+     */
+    public function with($with, bool $immediate = false): self
+    {
+        if (!is_array($with)) {
+            $with = [$with];
+        }
+        $this->with = $with;
+        $this->immediate = $immediate;
+
+        return $this;
+    }
+
+
+    /**
+     * {@inheritedoc}
+     */
     public function all(array $columns = []): array
     {
-        return $this->query()->all();
+        return $this->query()->all($columns);
     }
 
     /**
@@ -114,16 +158,21 @@ class Repository implements RepositoryInterface
     /**
      * {@inheritedoc}
      */
-    public function delete(Entity $entity, bool $force = false): bool
-    {
-    }
-
-    /**
-     * {@inheritedoc}
-     */
     public function find($id): ?Entity
     {
         return $this->query()->find($id);
+    }
+    
+    /**
+     * {@inheritedoc}
+     */
+    public function findBy(array $conditions): ?Entity
+    {
+        $query = $this->query();
+        foreach ($conditions as $name => $value) {
+            $query->where($name)->is($value);
+        }
+        return $query->get();
     }
 
     /**
@@ -133,13 +182,17 @@ class Repository implements RepositoryInterface
     {
         return $this->query()->findAll($ids);
     }
-
+    
     /**
      * {@inheritedoc}
      */
-    public function query(): EntityQuery
+    public function findAllBy(array $conditions): array
     {
-        return $this->manager->query($this->entityClass);
+        $query = $this->query();
+        foreach ($conditions as $name => $value) {
+            $query->where($name)->is($value);
+        }
+        return $query->all();
     }
 
     /**
@@ -175,9 +228,9 @@ class Repository implements RepositoryInterface
                 }
 
                 if ($mapper->hasTimestamp()) {
-                    list($createdAtCol, $updatedCol) = $mapper->getTimestampColumns();
+                    list($createdAtCol, $updatedAtCol) = $mapper->getTimestampColumns();
                     $columns[$createdAtCol] = date($this->manager->getDateFormat());
-                    $columns[$updatedCol] = null;
+                    $columns[$updatedAtCol] = null;
                 }
 
                 (new Insert($connection))->insert($columns)->into($mapper->getTable());
@@ -195,7 +248,7 @@ class Repository implements RepositoryInterface
 
             $data->markAsSaved($id);
 
-            if (!empty($eventsHandlers['save'])) {
+            if (isset($eventsHandlers['save'])) {
                 foreach ($eventsHandlers['save'] as $callback) {
                     $callback($entity, $data);
                 }
@@ -203,5 +256,99 @@ class Repository implements RepositoryInterface
 
             return true;
         }
+
+        if (!$data->wasModified()) {
+            return true;
+        }
+
+        $modified = $data->getModifiedColumns();
+        if (!empty($modified)) {
+            $connection = $this->manager->getConnection();
+            $result = $connection->transaction(function (Connection $connection) use ($data, $mapper, $modified) {
+                $columns = array_intersect_key($data->getRawColumns(), array_flip($modified));
+
+                $updatedAt = null;
+
+                if ($mapper->hasTimestamp()) {
+                    list(, $updatedAtCol) = $mapper->getTimestampColumns();
+                    $columns[$updatedAtCol] = $updatedAt = date($this->manager->getDateFormat());
+                }
+
+                $data->markAsUpdated($updatedAt);
+
+                $update = new Update($connection, $mapper->getTable());
+
+                foreach ($mapper->getPrimaryKey()->getValue($data->getRawColumns(), true) as $pkColumn => $pkValue) {
+                    $update->where($pkColumn)->is($pkValue);
+                }
+
+                return (bool) $update->set($columns);
+            });
+
+            if ($result === false) {
+                return false;
+            }
+
+            if (isset($eventsHandlers['update'])) {
+                foreach ($eventsHandlers['update'] as $callback) {
+                    $callback($entity, $data);
+                }
+            }
+
+            return true;
+        }
+
+        $connection = $this->manager->getConnection();
+        return $connection->transaction(function (Connection $connection) use ($data) {
+            $data->executePendingLinkage();
+
+            return true;
+        });
+    }
+
+    /**
+     * {@inheritedoc}
+     */
+    public function delete(Entity $entity, bool $force = false): bool
+    {
+        $data = Proxy::instance()->getEntityDataMapper($entity);
+        $mapper = $data->getEntityMapper();
+        $eventsHandlers = $mapper->getEventHandlers();
+
+        $connection = $this->manager->getConnection();
+        $result = $connection->transaction(function () use ($data, $mapper, $force) {
+            if ($data->isDeleted()) {
+                throw new EntityStateException('The record was deleted');
+            }
+
+            if ($data->isNew()) {
+                throw new EntityStateException('Can\'t delete an unsaved entity');
+            }
+
+            $delete = new EntityQuery($this->manager, $mapper);
+
+            foreach ($mapper->getPrimaryKey()->getValue($data->getRawColumns(), true) as $pkColumn => $pkValue) {
+                $delete->where($pkColumn)->is($pkValue);
+            }
+
+            return (bool) $delete->delete($force);
+        });
+
+        if ($result === false) {
+            return false;
+        }
+
+        if (isset($eventsHandlers['delete'])) {
+            foreach ($eventsHandlers['delete'] as $callback) {
+                $callback($entity, $data);
+            }
+        }
+
+        //Note this need call after events handlers
+        //because some handlers can't access
+        //entity attributes after mark as delete
+        $data->markAsDeleted();
+
+        return true;
     }
 }

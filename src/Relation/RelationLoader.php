@@ -90,9 +90,9 @@ class RelationLoader
 
     /**
      *
-     * @var null|array<int, mixed>
+     * @var array<int, mixed>
      */
-    protected $keys = [];
+    protected array $keys = [];
 
     /**
      * Create new instance
@@ -160,8 +160,9 @@ class RelationLoader
      */
     protected function loadResults(): array
     {
-        if ($this->results === null) {
+        if (empty($this->results)) {
             $this->results = $this->query->all();
+
             $this->keys = [];
 
             $proxy = Proxy::instance();

@@ -115,7 +115,7 @@ class Query extends BaseStatement
      * @param bool $value
      * @return $this
      */
-    public function withSoftDeleted(bool $value = true): self
+    public function withDeleted(bool $value = true): self
     {
         $this->withSoftDeleted = $value;
 
@@ -127,7 +127,7 @@ class Query extends BaseStatement
      * @param bool $value
      * @return $this
      */
-    public function onlySoftDeleted(bool $value = true): self
+    public function onlyDeleted(bool $value = true): self
     {
         $this->onlySoftDeleted = $this->withSoftDeleted = $value;
 
@@ -277,7 +277,7 @@ class Query extends BaseStatement
 
     /**
      * Return the relation data attributes
-     * @return array<string, mixed>
+     * @return array<string, array<string, mixed>>
      */
     protected function getWithAttributes(): array
     {

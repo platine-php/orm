@@ -351,7 +351,7 @@ class DataMapper implements DataMapperInterface
      /**
      * {@inheritedoc}
      */
-    public function getRelated(string $name, ?callable $callback = null)
+    public function getRelated(string $name)
     {
         if (array_key_exists($name, $this->relations)) {
             return $this->relations[$name];
@@ -380,10 +380,10 @@ class DataMapper implements DataMapperInterface
         }
 
         if (isset($this->loaders[$cacheKey])) {
-            return $this->relations[$cacheKey] = $this->loaders[$name]->getResult($this, $callback);
+            return $this->relations[$cacheKey] = $this->loaders[$name]->getResult($this);
         }
 
-        return $this->relations[$cacheKey] = $relations[$name]->getResult($this, $callback);
+        return $this->relations[$cacheKey] = $relations[$name]->getResult($this);
     }
 
     /**
@@ -475,7 +475,7 @@ class DataMapper implements DataMapperInterface
         $fillable = $this->mapper->getFillable();
         $guarded = $this->mapper->getGuarded();
 
-        if (!empty($fillableColumns)) {
+        if (!empty($fillable)) {
             $columns = array_intersect_key($columns, array_flip($fillable));
         } elseif (!empty($guarded)) {
             $columns = array_diff_key($columns, array_flip($guarded));
