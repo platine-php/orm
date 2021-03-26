@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -95,8 +95,11 @@ abstract class HasRelation extends Relation
         }
         $related = Proxy::instance()->getEntityDataMapper($entity);
 
-        foreach ($this->foreignKey->getValue($owner->getRawColumns(), true) as $fkColumn => $fkValue) {
-            $related->setColumn($fkColumn, $fkValue);
+        $foreignKeys = $this->foreignKey->getValue($owner->getRawColumns(), true);
+        if (is_array($foreignKeys)) {
+            foreach ($foreignKeys as $fkColumn => $fkValue) {
+                $related->setColumn($fkColumn, $fkValue);
+            }
         }
     }
 
@@ -114,19 +117,25 @@ abstract class HasRelation extends Relation
 
         /** @var array<string, array<mixed>> $ids */
         $ids = [];
-        
+
         $primaryKey = $owner->getPrimaryKey();
         foreach ($options['results'] as $result) {
-            foreach ($primaryKey->getValue($result, true) as $pkColumn => $pkValue) {
-                $ids[$pkColumn][] = $pkValue;
+            $primaryKeys = $primaryKey->getValue($result, true);
+            if (is_array($primaryKeys)) {
+                foreach ($primaryKeys as $pkColumn => $pkValue) {
+                    $ids[$pkColumn][] = $pkValue;
+                }
             }
         }
 
         $queryStatement = new QueryStatement();
         $select = new EntityQuery($manager, $related, $queryStatement);
 
-        foreach ($this->foreignKey->getValue($ids, true) as $fkColumn => $fkValue) {
-            $select->where($fkColumn)->in($fkValue);
+        $foreignKeys = $this->foreignKey->getValue($ids, true);
+        if (is_array($foreignKeys)) {
+            foreach ($foreignKeys as $fkColumn => $fkValue) {
+                $select->where($fkColumn)->in($fkValue);
+            }
         }
 
         if ($options['callback'] !== null) {
@@ -161,8 +170,11 @@ abstract class HasRelation extends Relation
         $queryStatement = new QueryStatement();
         $select = new EntityQuery($manager, $related, $queryStatement);
 
-        foreach ($this->foreignKey->getValue($mapper->getRawColumns(), true) as $fkColumn => $fkValue) {
-            $select->where($fkColumn)->is($fkValue);
+        $foreignKeys = $this->foreignKey->getValue($mapper->getRawColumns(), true);
+        if (is_array($foreignKeys)) {
+            foreach ($foreignKeys as $fkColumn => $fkValue) {
+                $select->where($fkColumn)->is($fkValue);
+            }
         }
 
         if ($this->queryCallback !== null || $callback !== null) {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -46,6 +46,7 @@ declare(strict_types=1);
 
 namespace Platine\Orm;
 
+use Closure;
 use Platine\Database\Connection;
 use Platine\Database\Query\Insert;
 use Platine\Database\Query\Update;
@@ -78,7 +79,7 @@ class Repository implements RepositoryInterface
 
     /**
      * The list of relation to load with the query
-     * @var array<int, string>
+     * @var array<int, string>|array<string, Closure>
      */
     protected array $with = [];
 
@@ -162,7 +163,7 @@ class Repository implements RepositoryInterface
     {
         return $this->query()->find($id);
     }
-    
+
     /**
      * {@inheritedoc}
      */
@@ -180,9 +181,9 @@ class Repository implements RepositoryInterface
      */
     public function findAll(...$ids): array
     {
-        return $this->query()->findAll($ids);
+        return $this->query()->findAll(...$ids);
     }
-    
+
     /**
      * {@inheritedoc}
      */
@@ -201,6 +202,84 @@ class Repository implements RepositoryInterface
     public function save(Entity $entity): bool
     {
         $data = Proxy::instance()->getEntityDataMapper($entity);
+
+        if ($data->isNew()) {
+            return (bool) $this->insert($entity);
+        }
+
+        return $this->update($entity);
+    }
+
+    /**
+     * {@inheritedoc}
+     */
+    public function insert(Entity $entity)
+    {
+        $data = Proxy::instance()->getEntityDataMapper($entity);
+        $mapper = $data->getEntityMapper();
+        $eventsHandlers = $mapper->getEventHandlers();
+
+        if ($data->isDeleted()) {
+            throw new EntityStateException('The record was deleted');
+        }
+
+        if (!$data->isNew()) {
+            throw new EntityStateException('The record was already saved');
+        }
+
+        $connection = $this->manager->getConnection();
+        $id = $connection->transaction(function (Connection $connection) use ($data, $mapper) {
+            $columns = $data->getRawColumns();
+            $pkGenerator = $mapper->getPrimaryKeyGenerator();
+            if ($pkGenerator !== null) {
+                $pkData = $pkGenerator($data);
+
+                if (is_array($pkData)) {
+                    foreach ($pkData as $pkColumn => $pkValue) {
+                        $columns[$pkColumn] = $pkValue;
+                    }
+                } else {
+                    $pkColumns = $mapper->getPrimaryKey()->columns();
+                    $columns[$pkColumns[0]] = $pkData;
+                }
+            }
+
+            if ($mapper->hasTimestamp()) {
+                list($createdAtCol, $updatedAtCol) = $mapper->getTimestampColumns();
+                $columns[$createdAtCol] = date($this->manager->getDateFormat());
+                $columns[$updatedAtCol] = null;
+            }
+
+            (new Insert($connection))->insert($columns)->into($mapper->getTable());
+
+            if ($pkGenerator !== null) {
+                return isset($pkData) ? $pkData : false;
+            }
+
+            return $connection->getPDO()->lastInsertId($mapper->getSequence());
+        });
+
+        if ($id === false) {
+            return false;
+        }
+
+        $data->markAsSaved($id);
+
+        if (isset($eventsHandlers['save'])) {
+            foreach ($eventsHandlers['save'] as $callback) {
+                $callback($entity, $data);
+            }
+        }
+
+        return $id;
+    }
+
+    /**
+     * {@inheritedoc}
+     */
+    public function update(Entity $entity): bool
+    {
+        $data = Proxy::instance()->getEntityDataMapper($entity);
         $mapper = $data->getEntityMapper();
         $eventsHandlers = $mapper->getEventHandlers();
 
@@ -209,52 +288,7 @@ class Repository implements RepositoryInterface
         }
 
         if ($data->isNew()) {
-            $connection = $this->manager->getConnection();
-            $id = $connection->transaction(function (Connection $connection) use ($data, $mapper) {
-                $columns = $data->getRawColumns();
-
-                $pkGenerator = $mapper->getPrimaryKeyGenerator();
-                if ($pkGenerator !== null) {
-                    $pkData = $pkGenerator($data);
-
-                    if (is_array($pkData)) {
-                        foreach ($pkData as $pkColumn => $pkValue) {
-                            $columns[$pkColumn] = $pkValue;
-                        }
-                    } else {
-                        $pkColumns = $mapper->getPrimaryKey()->columns();
-                        $columns[$pkColumns[0]] = $pkData;
-                    }
-                }
-
-                if ($mapper->hasTimestamp()) {
-                    list($createdAtCol, $updatedAtCol) = $mapper->getTimestampColumns();
-                    $columns[$createdAtCol] = date($this->manager->getDateFormat());
-                    $columns[$updatedAtCol] = null;
-                }
-
-                (new Insert($connection))->insert($columns)->into($mapper->getTable());
-
-                if ($pkGenerator !== null) {
-                    return isset($pkData) ? $pkData : false;
-                }
-
-                return $connection->getPDO()->lastInsertId($mapper->getSequence());
-            });
-
-            if ($id === false) {
-                return false;
-            }
-
-            $data->markAsSaved($id);
-
-            if (isset($eventsHandlers['save'])) {
-                foreach ($eventsHandlers['save'] as $callback) {
-                    $callback($entity, $data);
-                }
-            }
-
-            return true;
+            throw new EntityStateException('Can\'t update an unsaved entity');
         }
 
         if (!$data->wasModified()) {
@@ -273,13 +307,15 @@ class Repository implements RepositoryInterface
                     list(, $updatedAtCol) = $mapper->getTimestampColumns();
                     $columns[$updatedAtCol] = $updatedAt = date($this->manager->getDateFormat());
                 }
-
                 $data->markAsUpdated($updatedAt);
 
                 $update = new Update($connection, $mapper->getTable());
 
-                foreach ($mapper->getPrimaryKey()->getValue($data->getRawColumns(), true) as $pkColumn => $pkValue) {
-                    $update->where($pkColumn)->is($pkValue);
+                $primaryKeys = $mapper->getPrimaryKey()->getValue($data->getRawColumns(), true);
+                if (is_array($primaryKeys)) {
+                    foreach ($primaryKeys as $pkColumn => $pkValue) {
+                        $update->where($pkColumn)->is($pkValue);
+                    }
                 }
 
                 return (bool) $update->set($columns);
@@ -314,8 +350,8 @@ class Repository implements RepositoryInterface
         $data = Proxy::instance()->getEntityDataMapper($entity);
         $mapper = $data->getEntityMapper();
         $eventsHandlers = $mapper->getEventHandlers();
-
         $connection = $this->manager->getConnection();
+
         $result = $connection->transaction(function () use ($data, $mapper, $force) {
             if ($data->isDeleted()) {
                 throw new EntityStateException('The record was deleted');

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -120,11 +120,14 @@ abstract class ShareRelation extends Relation
         /** @var array<string, mixed> $values */
         $values = [];
 
-        foreach ($this->foreignKey->getValue($mapper->getRawColumns(), true) as $fkColumn => $fkValue) {
-            $values[$fkColumn] = $fkValue;
+        $foreignKeys = $this->foreignKey->getValue($mapper->getRawColumns(), true);
+        if (is_array($foreignKeys)) {
+            foreach ($foreignKeys as $fkColumn => $fkValue) {
+                $values[$fkColumn] = $fkValue;
+            }
         }
 
-        $columns = Proxy::instance()->getEntityDataMapper($entity);
+        $columns = Proxy::instance()->getEntityDataMapper($entity)->getRawColumns();
         foreach ($this->junction->columns() as $pkColumn => $fkColumn) {
             $values[$fkColumn] = $columns[$pkColumn];
         }
@@ -155,15 +158,18 @@ abstract class ShareRelation extends Relation
         if ($this->foreignKey === null) {
             $this->foreignKey = $owner->getForeignKey();
         }
-        
+
         /** @var array<string, mixed> $values */
         $values = [];
-        
-        foreach ($this->foreignKey->getValue($mapper->getRawColumns(), true) as $fkColumn => $fkValue) {
-            $values[$fkColumn] = $fkValue;
+
+        $foreignKeys = $this->foreignKey->getValue($mapper->getRawColumns(), true);
+        if (is_array($foreignKeys)) {
+            foreach ($foreignKeys as $fkColumn => $fkValue) {
+                $values[$fkColumn] = $fkValue;
+            }
         }
 
-        $columns = Proxy::instance()->getEntityDataMapper($entity);
+        $columns = Proxy::instance()->getEntityDataMapper($entity)->getRawColumns();
         foreach ($this->junction->columns() as $pkColumn => $fkColumn) {
             $values[$fkColumn] = $columns[$pkColumn];
         }
@@ -196,10 +202,14 @@ abstract class ShareRelation extends Relation
         $junctionTable = $this->junction->table();
         $joinTable = $related->getTable();
 
+        /** @var array<string, array<mixed>> $ids */
         $ids = [];
         foreach ($options['results'] as $result) {
-            foreach ($owner->getPrimaryKey()->getValue($result, true) as $pkColumn => $pkValue) {
-                $ids[$pkColumn][] = $pkValue;
+            $primaryKeys = $owner->getPrimaryKey()->getValue($result, true);
+            if (is_array($primaryKeys)) {
+                foreach ($primaryKeys as $pkColumn => $pkValue) {
+                    $ids[$pkColumn][] = $pkValue;
+                }
             }
         }
 
@@ -261,8 +271,11 @@ abstract class ShareRelation extends Relation
             }
         });
 
-        foreach ($this->foreignKey->getValue($ids, true) as $fkColumn => $fkValue) {
-            $select->where($junctionTable . '.' . $fkColumn)->in($fkValue);
+        $foreignKeys = $this->foreignKey->getValue($ids, true);
+        if (is_array($foreignKeys)) {
+            foreach ($foreignKeys as $fkColumn => $fkValue) {
+                $select->where($junctionTable . '.' . $fkColumn)->in($fkValue);
+            }
         }
 
         $queryStatement->addColumn($joinTable . '.*');
@@ -362,8 +375,11 @@ abstract class ShareRelation extends Relation
             }
         });
 
-        foreach ($this->foreignKey->getValue($mapper->getRawColumns(), true) as $fkColumn => $value) {
-            $select->where($junctionTable . '.' . $fkColumn)->is($value);
+         $foreignKeys = $this->foreignKey->getValue($mapper->getRawColumns(), true);
+        if (is_array($foreignKeys)) {
+            foreach ($foreignKeys as $fkColumn => $value) {
+                $select->where($junctionTable . '.' . $fkColumn)->is($value);
+            }
         }
 
         $queryStatement->addColumn($joinTable . '.*');

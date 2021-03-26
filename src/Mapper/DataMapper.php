@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -53,10 +53,11 @@ use Platine\Orm\EntityManager;
 use Platine\Orm\Exception\EntityStateException;
 use Platine\Orm\Exception\PropertyNotFoundException;
 use Platine\Orm\Exception\RelationNotFoundException;
+use Platine\Orm\Mapper\DataMapperInterface;
+use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Relation\BelongsTo;
-use Platine\Orm\Relation\HasMany;
-use Platine\Orm\Relation\HasOne;
 use Platine\Orm\Relation\HasRelation;
+use Platine\Orm\Relation\Relation;
 use Platine\Orm\Relation\ShareMany;
 use Platine\Orm\Relation\ShareOne;
 use Platine\Orm\Relation\ShareRelation;
@@ -351,12 +352,13 @@ class DataMapper implements DataMapperInterface
      /**
      * {@inheritedoc}
      */
-    public function getRelated(string $name)
+    public function getRelated(string $name, callable $callback = null)
     {
         if (array_key_exists($name, $this->relations)) {
             return $this->relations[$name];
         }
 
+        /** @var array<string, \Platine\Orm\Relation\Relation> $relations */
         $relations = $this->mapper->getRelations();
 
         $cacheKey = $name;
@@ -375,15 +377,18 @@ class DataMapper implements DataMapperInterface
 
         $this->hydrate();
 
+        //Race condition
+        //@codeCoverageIgnoreStart
         if (isset($this->relations[$cacheKey])) {
             return $this->relations[$cacheKey];
         }
+        //@codeCoverageIgnoreEnd
 
         if (isset($this->loaders[$cacheKey])) {
             return $this->relations[$cacheKey] = $this->loaders[$name]->getResult($this);
         }
 
-        return $this->relations[$cacheKey] = $relations[$name]->getResult($this);
+        return $this->relations[$cacheKey] = $relations[$name]->getResult($this, $callback);
     }
 
     /**
@@ -400,7 +405,7 @@ class DataMapper implements DataMapperInterface
             ));
         }
 
-        /** @var BelongsTo|HasOne|HasMany $rel */
+        /** @var Relation $rel */
         $rel = $relations[$name];
 
         if (!($rel instanceof BelongsTo) && !($rel instanceof HasRelation)) {
@@ -494,7 +499,6 @@ class DataMapper implements DataMapperInterface
     public function markAsSaved($id): bool
     {
         $primaryKey = $this->mapper->getPrimaryKey();
-
         if (!$primaryKey->isComposite()) {
             $columns = $primaryKey->columns();
             $this->rawColumns[$columns[0]] = $id;
@@ -557,9 +561,11 @@ class DataMapper implements DataMapperInterface
             $rel = $item['relation'];
 
             if (isset($item['link'])) {
-                $rel->link($this, $item['entity']);
-            } else {
-                $rel->unlink($this, $item['entity']);
+                if ($item['link'] === true) {
+                    $rel->link($this, $item['entity']);
+                } else {
+                    $rel->unlink($this, $item['entity']);
+                }
             }
         }
 
@@ -578,8 +584,11 @@ class DataMapper implements DataMapperInterface
 
         $select = new Select($this->manager->getConnection(), $this->mapper->getTable());
 
-        foreach ($this->mapper->getPrimaryKey()->getValue($this->rawColumns, true) as $pkColumn => $pkValue) {
-            $select->where($pkColumn)->is($pkValue);
+        $primaryKeys = $this->mapper->getPrimaryKey()->getValue($this->rawColumns, true);
+        if (is_array($primaryKeys)) {
+            foreach ($primaryKeys as $pkColumn => $pkValue) {
+                $select->where($pkColumn)->is($pkValue);
+            }
         }
 
         $columns = $select->select()->fetchAssoc()->get();
@@ -718,7 +727,7 @@ class DataMapper implements DataMapperInterface
             ));
         }
 
-        /** @var ShareOne|ShareMany $rel  */
+        /** @var ShareRelation $rel  */
         $rel = $relations[$relation];
         if (!($rel instanceof ShareRelation)) {
             throw new RuntimeException('Unsupported relation type');

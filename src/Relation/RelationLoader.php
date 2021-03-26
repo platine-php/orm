@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -175,7 +175,6 @@ class RelationLoader
                 }
             }
         }
-
         return $this->results;
     }
 }

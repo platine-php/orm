@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -151,7 +151,7 @@ class EntityManager
         $mapper = new EntityMapper($entityClass);
 
         $callback = $entityClass . '::mapEntity';
-        if(is_callable($callback)){
+        if (is_callable($callback)) {
             $callback($mapper);
         }
 

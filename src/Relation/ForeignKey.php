@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -108,6 +108,7 @@ class ForeignKey
                     ? $columns[$column[0]]
                     : null;
         }
+
         /** @var array<string, mixed> $values */
         $values = [];
         foreach ($this->columns as $candidate => $column) {
@@ -135,7 +136,7 @@ class ForeignKey
                     ? $columns[$column[0]]
                     : null;
         }
-
+        /** @var array<string, mixed> $values */
         $values = [];
         foreach ($this->columns as $candidate => $column) {
             $values[$candidate] = isset($columns[$column])

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -46,6 +46,7 @@ declare(strict_types=1);
 
 namespace Platine\Orm;
 
+use Closure;
 use Platine\Orm\Query\EntityQuery;
 
 /**
@@ -56,7 +57,7 @@ interface RepositoryInterface
 {
     /**
      * Return the instance of EntityQuery
-     * @param string|array<int, string> $with
+     * @param string|array<int, string>|array<string, Closure> $with
      * @param bool $immediate
      * @return EntityQuery
      */
@@ -64,7 +65,7 @@ interface RepositoryInterface
 
     /**
      *
-     * @param string|array<int, string> $with
+     * @param string|array<int, string>|array<string, Closure> $with
      * @param bool $immediate
      * @return $this
      */
@@ -78,11 +79,25 @@ interface RepositoryInterface
     public function create(array $columns = []): Entity;
 
     /**
-     * Save the entity in data store
+     * Shortcut to "insert" and "update" the entity in data store
      * @param Entity $entity
      * @return bool
      */
     public function save(Entity $entity): bool;
+
+    /**
+     * Save the new entity in data store
+     * @param Entity $entity
+     * @return mixed the primary key(s) value(s)
+     */
+    public function insert(Entity $entity);
+
+    /**
+     * Update the existing entity in data store
+     * @param Entity $entity
+     * @return bool
+     */
+    public function update(Entity $entity): bool;
 
     /**
      * Delete the entity
@@ -106,7 +121,7 @@ interface RepositoryInterface
      * @return Entity|null
      */
     public function find($id): ?Entity;
-    
+
     /**
      * Find one entity instance using some conditions
      * @param array<string, mixed> $conditions
@@ -121,7 +136,7 @@ interface RepositoryInterface
      * @return array<int, Entity>
      */
     public function findAll(...$ids): array;
-    
+
     /**
      * Find the list of record using some conditions
      * @param array<string, mixed> $conditions

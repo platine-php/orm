@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -144,10 +144,11 @@ interface DataMapperInterface
     /**
      * Return the value for the given relation
      * @param string $name
+     * @param callable|null $callback
      *
      * @return mixed
      */
-    public function getRelated(string $name);
+    public function getRelated(string $name, callable $callback = null);
 
     /**
      * Set the value for the given relation

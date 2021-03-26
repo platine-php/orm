@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -68,7 +68,7 @@ class Query extends BaseStatement
 
     /**
      * The list of relation data to load with the query
-     * @var array<int, string>
+     * @var array<int, string>|array<string, Closure>
      */
     protected array $with = [];
 
@@ -136,7 +136,7 @@ class Query extends BaseStatement
 
     /**
      *
-     * @param string|array<int, string> $value
+     * @param string|array<int, string>|array<string, Closure> $value
      * @param bool $immediate
      * @return $this
      */
@@ -284,11 +284,12 @@ class Query extends BaseStatement
         $with = [];
         $extra = [];
 
-        foreach ($this->with as $key => $value) {
+        foreach ($this->with as $key => /** @var string|Closure $value */ $value) {
             $fullName = $value;
             $callback = null;
 
             if ($value instanceof Closure) {
+                /** @var string $fullName */
                 $fullName = $key;
                 $callback = $value;
             }

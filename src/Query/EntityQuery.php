@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -58,6 +58,7 @@ use Platine\Database\ResultSet;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Mapper\EntityMapper;
+use Platine\Orm\Relation\RelationLoader;
 
 /**
  * Class EntityQuery
@@ -139,7 +140,7 @@ class EntityQuery extends Query
     {
         $result = $this->query($columns)
                        ->fetchAssoc()
-                        ->get();
+                       ->get();
 
         if ($result === false) {
             return null;
@@ -166,12 +167,12 @@ class EntityQuery extends Query
     public function all(array $columns = []): array
     {
         $results = $this->query($columns)
-                       ->fetchAssoc()
+                        ->fetchAssoc()
                         ->all();
 
         $entities = [];
-        
-        if(is_array($results)){
+
+        if (is_array($results)) {
             $class = $this->mapper->getEntityClass();
             $isReadOnly = $this->isReadOnly();
             $loaders = $this->getRelationLoaders($results);
@@ -319,66 +320,78 @@ class EntityQuery extends Query
     /**
      *
      * @param string|Expression|Closure $column
-     * @return void
+     * @return mixed
      */
-    public function column($column): void
+    public function column($column)
     {
         (new ColumnExpression($this->queryStatement))->column($column);
+
+        return $this->executeAggregate();
     }
 
     /**
      *
      * @param string|Expression|Closure $column
      * @param bool $distinct
-     * @return void
+     * @return mixed
      */
-    public function count($column = '*', bool $distinct = true): void
+    public function count($column = '*', bool $distinct = true)
     {
         (new ColumnExpression($this->queryStatement))->count($column, null, $distinct);
+
+        return $this->executeAggregate();
     }
 
     /**
      *
      * @param string|Expression|Closure $column
      * @param bool $distinct
-     * @return void
+     * @return mixed
      */
-    public function avg($column, bool $distinct = true): void
+    public function avg($column, bool $distinct = true)
     {
         (new ColumnExpression($this->queryStatement))->avg($column, null, $distinct);
+
+        return $this->executeAggregate();
     }
 
     /**
      *
      * @param string|Expression|Closure $column
      * @param bool $distinct
-     * @return void
+     * @return mixed
      */
-    public function sum($column, bool $distinct = true): void
+    public function sum($column, bool $distinct = true)
     {
         (new ColumnExpression($this->queryStatement))->sum($column, null, $distinct);
+
+        return $this->executeAggregate();
     }
 
     /**
      *
      * @param string|Expression|Closure $column
      * @param bool $distinct
-     * @return void
+     * @return mixed
      */
-    public function min($column, bool $distinct = true): void
+    public function min($column, bool $distinct = true)
     {
         (new ColumnExpression($this->queryStatement))->min($column, null, $distinct);
+
+        return $this->executeAggregate();
     }
 
     /**
      *
      * @param string|Expression|Closure $column
      * @param bool $distinct
-     * @return void
+     * @return mixed
      */
-    public function max($column, bool $distinct = true): void
+    public function max($column, bool $distinct = true)
     {
         (new ColumnExpression($this->queryStatement))->max($column, null, $distinct);
+
+        return $this->executeAggregate();
     }
 
     /**
@@ -392,7 +405,7 @@ class EntityQuery extends Query
 
     /**
      * Build the instance of EntityQuery
-     * @return self
+     * @return $this
      */
     protected function buildQuery(): self
     {
@@ -453,19 +466,15 @@ class EntityQuery extends Query
                 continue;
             }
 
-            /** @var \Platine\Orm\Relation\RelationLoader $loader */
+            /** @var RelationLoader $loader */
             $loader = $relations[$with]->getLoader($this->manager, $this->mapper, [
                 'results' => $results,
                 'callback' => $callback,
-                'with' => isset($attributes[$with]['extra'])
-                            ? $attributes[$with]['extra']
+                'with' => isset($attributes['extra'][$with])
+                            ? $attributes['extra'][$with]
                             : [],
                 'immediate' => $this->immediate
             ]);
-
-            if ($loader === null) {
-                continue;
-            }
 
             $loaders[$with] = $loader;
         }
@@ -499,7 +508,7 @@ class EntityQuery extends Query
     }
 
     /**
-     * Check if the current entity query is readonly
+     * Check if the current entity query is read only
      * @return bool
      */
     protected function isReadOnly(): bool
@@ -515,6 +524,7 @@ class EntityQuery extends Query
      */
     protected function transaction(Closure $callback)
     {
-        return $this->manager->getConnection()->transaction($callback);
+        return $this->manager->getConnection()
+                             ->transaction($callback);
     }
 }

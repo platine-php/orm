@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -87,8 +87,11 @@ class BelongsTo extends Relation
             $this->foreignKey = $mapper->getForeignKey();
         }
 
-        foreach ($this->foreignKey->getValue($columns, true) as $fkColumn => $fkValue) {
-            $owner->setColumn($fkColumn, $fkValue);
+        $foreignKeys = $this->foreignKey->getValue($columns, true);
+        if (is_array($foreignKeys)) {
+            foreach ($foreignKeys as $fkColumn => $fkValue) {
+                $owner->setColumn($fkColumn, $fkValue);
+            }
         }
     }
 
@@ -98,18 +101,22 @@ class BelongsTo extends Relation
      */
     public function getLoader(EntityManager $manager, EntityMapper $owner, array $options): RelationLoader
     {
+
         $related = $manager->getEntityMapper($this->entityClass);
 
         if ($this->foreignKey === null) {
             $this->foreignKey = $related->getForeignKey();
         }
 
-        /** @var array<string, array<mixed>> $ids */
+        /** @var array<string, array<int, mixed>> $ids */
         $ids = [];
-        
+
         foreach ($options['results'] as $result) {
-            foreach ($this->foreignKey->getInverseValue($result, true) as $pkColumn => $pkValue) {
-                $ids[$pkColumn][] = $pkValue;
+            $primaryKeys = $this->foreignKey->getInverseValue($result, true);
+            if (is_array($primaryKeys)) {
+                foreach ($primaryKeys as $pkColumn => $pkValue) {
+                    $ids[$pkColumn][] = $pkValue;
+                }
             }
         }
 
@@ -157,8 +164,11 @@ class BelongsTo extends Relation
         $queryStatement = new QueryStatement();
         $select = new EntityQuery($manager, $related, $queryStatement);
 
-        foreach ($this->foreignKey->getInverseValue($mapper->getRawColumns(), true) as $pkColumn => $pkValue) {
-            $select->where($pkColumn)->is($pkValue);
+        $primaryKeys = $this->foreignKey->getInverseValue($mapper->getRawColumns(), true);
+        if (is_array($primaryKeys)) {
+            foreach ($primaryKeys as $pkColumn => $pkValue) {
+                $select->where($pkColumn)->is($pkValue);
+            }
         }
 
         if ($this->queryCallback !== null || $callback !== null) {

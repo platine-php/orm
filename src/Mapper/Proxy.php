@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Platine Database
+ * Platine ORM
  *
  * Platine ORM provides a flexible and powerful ORM implementing a data-mapper pattern.
  *
@@ -111,8 +111,10 @@ class Proxy
         if ($value !== null) {
             return $value[2];
         }
-
+        //Race condition
+        //@codeCoverageIgnoreStart
         return $this->getEntityDataMapper($entity)->getRawColumns();
+        //@codeCoverageIgnoreEnd
     }
 
     public static function instance(): Proxy
@@ -120,6 +122,8 @@ class Proxy
         static $proxy = null;
 
         if ($proxy === null) {
+            //Race condition
+            //@codeCoverageIgnoreStart
             try {
                 $proxy = new self();
             } catch (ReflectionException $exception) {
@@ -132,6 +136,7 @@ class Proxy
                     $exception->getPrevious()
                 );
             }
+            //@codeCoverageIgnoreEnd
         }
 
         return $proxy;
