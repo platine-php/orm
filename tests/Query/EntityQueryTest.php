@@ -16,7 +16,7 @@ use Platine\Orm\Query\EntityQuery;
 use Platine\Orm\Relation\BelongsTo;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\RelationLoader;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 use Platine\Test\Fixture\Orm\Connection;
 
 /**

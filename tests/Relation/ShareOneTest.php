@@ -14,7 +14,7 @@ use Platine\Orm\Relation\ForeignKey;
 use Platine\Orm\Relation\ShareOne;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\RelationLoader;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 use Platine\Test\Fixture\Orm\Connection;
 
 /**

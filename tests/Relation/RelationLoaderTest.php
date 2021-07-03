@@ -12,7 +12,7 @@ use Platine\Orm\Mapper\EntityMapperInterface;
 use Platine\Orm\Query\EntityQuery;
 use Platine\Orm\Relation\ForeignKey;
 use Platine\Orm\Relation\RelationLoader;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 
 /**
  * RelationLoader class tests

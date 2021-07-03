@@ -13,7 +13,7 @@ use Platine\Orm\Relation\HasOne;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\ShareMany;
 use Platine\Orm\Relation\ShareOne;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 
 /**
  * EntityMapper class tests

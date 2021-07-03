@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Orm\Relation;
 
 use Platine\Orm\Relation\Junction;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 
 /**
  * Junction class tests

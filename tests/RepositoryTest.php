@@ -15,7 +15,7 @@ use Platine\Orm\Query\EntityQuery;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\ShareOne;
 use Platine\Orm\Repository;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 use Platine\Test\Fixture\Orm\Connection;
 
 /**

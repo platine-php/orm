@@ -10,7 +10,7 @@ use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\EntityMapperInterface;
 use Platine\Orm\Relation\PrimaryKey;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 
 /**
  * PrimaryKey class tests

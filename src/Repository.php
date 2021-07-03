@@ -318,7 +318,7 @@ class Repository implements RepositoryInterface
                     }
                 }
 
-                return (bool) $update->set($columns);
+                return $update->set($columns) >= 0;
             });
 
             if ($result === false) {

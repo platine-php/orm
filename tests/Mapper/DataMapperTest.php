@@ -19,7 +19,7 @@ use Platine\Orm\Relation\BelongsTo;
 use Platine\Orm\Relation\HasOne;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\ShareOne;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 use RuntimeException;
 
 /**

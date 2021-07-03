@@ -9,7 +9,7 @@ use Platine\Orm\EntityManager;
 use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\EntityMapperInterface;
 use Platine\Orm\Query\EntityQuery;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 use Platine\Test\Fixture\Orm\Connection;
 use RuntimeException;
 use stdClass;

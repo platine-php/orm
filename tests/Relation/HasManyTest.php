@@ -12,7 +12,7 @@ use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\EntityMapperInterface;
 use Platine\Orm\Relation\ForeignKey;
 use Platine\Orm\Relation\HasMany;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 use Platine\Test\Fixture\Orm\Connection;
 
 /**

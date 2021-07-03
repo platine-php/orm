@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Orm\Relation;
 
 use Platine\Orm\Relation\ForeignKey;
-use Platine\PlatineTestCase;
+use Platine\Dev\PlatineTestCase;
 
 /**
  * ForeignKey class tests
