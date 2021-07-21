@@ -47,6 +47,7 @@ declare(strict_types=1);
 namespace Platine\Orm;
 
 use Closure;
+use Platine\Database\Query\Expression;
 use Platine\Orm\Query\EntityQuery;
 
 /**
@@ -64,12 +65,28 @@ interface RepositoryInterface
     public function query($with = [], bool $immediate = false): EntityQuery;
 
     /**
-     *
+     * Load with relation
      * @param string|array<int, string>|array<string, Closure> $with
      * @param bool $immediate
      * @return $this
      */
     public function with($with, bool $immediate = false): self;
+
+    /**
+     * Set order
+     * @param string|Closure|Expression|string[]|Expression[]|Closure[] $columns
+     * @param string $order
+     * @return $this
+     */
+    public function orderBy($columns, string $order = 'ASC'): self;
+
+    /**
+     * Add limit and offset
+     * @param int $offset
+     * @param int $limit
+     * @return $this
+     */
+    public function limit(int $offset, int $limit): self;
 
     /**
      * Create the instance of Entity

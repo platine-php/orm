@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Orm;
 
 use Platine\Database\Query\Where;
+use Platine\Dev\PlatineTestCase;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Exception\EntityStateException;
@@ -15,7 +16,6 @@ use Platine\Orm\Query\EntityQuery;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\ShareOne;
 use Platine\Orm\Repository;
-use Platine\Dev\PlatineTestCase;
 use Platine\Test\Fixture\Orm\Connection;
 
 /**
@@ -214,6 +214,76 @@ class RepositoryTest extends PlatineTestCase
         //Already reset after each query
         $this->assertEmpty($rWith->getValue($e));
         $this->assertFalse($rImmediate->getValue($e));
+    }
+
+    public function testFindOrderBy(): void
+    {
+        $eq = $this->getMockBuilder(EntityQuery::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $eq->expects($this->exactly(1))
+                ->method('orderBy')
+                ->will($this->returnSelf());
+
+        $eq->expects($this->exactly(1))
+                ->method('find')
+                ->will($this->returnValue(null));
+
+        $entityClass = get_class($this->getEntityInstance([]));
+        $manager = $this->getEntityManager([
+            'query' => $eq
+        ], []);
+
+        $manager->expects($this->exactly(1))
+                ->method('query')
+                ->with($entityClass);
+
+        $e = new Repository($manager, $entityClass);
+        $res = $e->orderBy('foo')
+                ->find(1);
+        $this->assertNull($res);
+
+        //Already reset after each query
+        $this->assertEmpty($this->getPropertyValue(Repository::class, $e, 'orderColumns'));
+        $this->assertEquals('ASC', $this->getPropertyValue(Repository::class, $e, 'orderDir'));
+    }
+
+    public function testFindUsingLimit(): void
+    {
+        $eq = $this->getMockBuilder(EntityQuery::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $eq->expects($this->exactly(1))
+                ->method('offset')
+                ->will($this->returnSelf());
+
+        $eq->expects($this->exactly(1))
+                ->method('limit')
+                ->will($this->returnSelf());
+
+        $eq->expects($this->exactly(1))
+                ->method('find')
+                ->will($this->returnValue(null));
+
+        $entityClass = get_class($this->getEntityInstance([]));
+        $manager = $this->getEntityManager([
+            'query' => $eq
+        ], []);
+
+        $manager->expects($this->exactly(1))
+                ->method('query')
+                ->with($entityClass);
+
+        $e = new Repository($manager, $entityClass);
+        $res = $e->limit(0, 10)
+                ->find(1);
+        $this->assertNull($res);
+
+        //Already reset after each query
+        $this->assertEquals(-1, $this->getPropertyValue(Repository::class, $e, 'offset'));
+        $this->assertEquals(0, $this->getPropertyValue(Repository::class, $e, 'limit'));
     }
 
     public function testFindBy(): void
@@ -1003,8 +1073,7 @@ class RepositoryTest extends PlatineTestCase
 
         $entity->name = 'baz';
 
-        //False because we didnt mock the return of Update::set()
-        $this->assertFalse($e->save($entity));
+        $this->assertTrue($e->save($entity));
         $this->assertEquals(
             "UPDATE `my_table` SET `name` = "
                 . "'baz', `u_at` = '" . date('Y-m') . "' WHERE `id` = 1",

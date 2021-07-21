@@ -640,11 +640,13 @@ class DataMapper implements DataMapperInterface
                 $value = (string) $value;
                 break;
             case 'date':
-                $value = /** @var DateTime $value */ $value->format($this->manager->getDateFormat());
+                $value = DateTime::createFromFormat($this->manager->getDateFormat(), $value);
                 break;
             case 'json':
+                $value = json_decode($value);
+                break;
             case 'json-assoc':
-                $value = json_encode($value);
+                $value = json_decode($value, true);
                 break;
             default:
                 throw new RuntimeException(sprintf(
@@ -691,13 +693,11 @@ class DataMapper implements DataMapperInterface
                 $value = (string) $value;
                 break;
             case 'date':
-                $value = DateTime::createFromFormat($this->manager->getDateFormat(), $value);
+                $value = /** @var DateTime $value */ $value->format($this->manager->getDateFormat());
                 break;
             case 'json':
-                $value = json_decode($value, true);
-                break;
             case 'json-assoc':
-                $value = json_decode($value, true);
+                $value = json_encode($value);
                 break;
             default:
                 throw new RuntimeException(sprintf(

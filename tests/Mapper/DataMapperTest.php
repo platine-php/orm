@@ -7,6 +7,7 @@ namespace Platine\Test\Orm\Mapper;
 use DateTime;
 use Platine\Database\Connection;
 use Platine\Database\ResultSet;
+use Platine\Dev\PlatineTestCase;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Exception\EntityStateException;
@@ -19,8 +20,8 @@ use Platine\Orm\Relation\BelongsTo;
 use Platine\Orm\Relation\HasOne;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\ShareOne;
-use Platine\Dev\PlatineTestCase;
 use RuntimeException;
+use stdClass;
 
 /**
  * DataMapper class tests
@@ -1218,6 +1219,10 @@ class DataMapperTest extends PlatineTestCase
         $date = new DateTime();
         $date->setDate(2020, 10, 10);
         $date->setTime(10, 50, 10);
+
+        $o = new stdClass();
+        $o->foo = 'bar';
+
         return array(
             array('1', 'unknown type', 1, true),
             array('1', 'int', 1),
@@ -1229,9 +1234,9 @@ class DataMapperTest extends PlatineTestCase
             array(0, 'bool', false),
             array(1, 'boolean', true),
             array(1, 'string', '1'),
-            array(['foo' => 'bar'], 'json', '{"foo":"bar"}'),
-            array(['foo' => 'bar'], 'json-assoc', '{"foo":"bar"}'),
-            array($date, 'date', '2020-10-10 10:50:10'),
+            array('{"foo":"bar"}', 'json', $o),
+            array('{"foo":"bar"}', 'json-assoc', ['foo' => 'bar']),
+            array('2020-10-10 10:50:10', 'date', $date),
         );
     }
 
@@ -1255,9 +1260,10 @@ class DataMapperTest extends PlatineTestCase
             array(0, 'bool', false),
             array(1, 'boolean', true),
             array(1, 'string', '1'),
-            array('{"foo":"bar"}', 'json', ['foo' => 'bar']),
-            array('{"foo":"bar"}', 'json-assoc', ['foo' => 'bar']),
-            array('2020-10-10 10:50:10', 'date', $date),
+            array(['foo' => 'bar'], 'json', '{"foo":"bar"}'),
+            array(['foo' => 'bar'], 'json-assoc', '{"foo":"bar"}'),
+            array($date, 'date', '2020-10-10 10:50:10'),
+
         );
     }
 

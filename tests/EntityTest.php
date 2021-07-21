@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Platine\Test\Orm;
 
+use Platine\Dev\PlatineTestCase;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Exception\PropertyNotFoundException;
@@ -11,7 +12,7 @@ use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\EntityMapperInterface;
 use Platine\Orm\Relation\BelongsTo;
-use Platine\Dev\PlatineTestCase;
+use Platine\Orm\Relation\ShareMany;
 
 /**
  * Entity class tests
@@ -157,7 +158,7 @@ class EntityTest extends PlatineTestCase
         $this->assertEquals($e->foo, $related);
     }
 
-    public function testSetUsingRelation(): void
+    public function testSetUsingNotShareRelation(): void
     {
         $related = null;
 
@@ -188,6 +189,50 @@ class EntityTest extends PlatineTestCase
         );
 
         $e->foo = null;
+
+        $this->assertEquals($e->foo, null);
+    }
+
+    public function testSetUsingShareRelation(): void
+    {
+        $related = null;
+
+        $sh = $this->getMockBuilder(ShareMany::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $sh->expects($this->any())
+                ->method('getResult')
+                ->will($this->returnValue($related));
+
+        $eMapper = $this->getEntityMapper([
+            'getRelations' => ['foo' => $sh]
+        ], []);
+        $eManager = $this->getEntityManager([], []);
+        $columns = [];
+        $loaders = [];
+        $readOnly = false;
+        $isNew = false;
+
+        $e = $this->getEntityInstance(
+            $eManager,
+            $eMapper,
+            $columns,
+            $loaders,
+            $readOnly,
+            $isNew
+        );
+
+        $er = $this->getEntityInstance(
+            $eManager,
+            $eMapper,
+            $columns,
+            $loaders,
+            $readOnly,
+            $isNew
+        );
+
+        $e->foo = [$er];
 
         $this->assertEquals($e->foo, null);
     }

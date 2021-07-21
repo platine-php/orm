@@ -128,7 +128,13 @@ abstract class Entity
     public function __set(string $name, $value)
     {
         if ($this->mapper()->hasRelation($name)) {
-            $this->mapper()->setRelated($name, $value);
+            if (is_array($value)) {
+                foreach ($value as $entity) {
+                    $this->mapper()->link($name, $entity);
+                }
+            } else {
+                $this->mapper()->setRelated($name, $value);
+            }
         } else {
             $this->mapper()->setColumn($name, $value);
         }

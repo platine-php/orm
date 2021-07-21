@@ -48,6 +48,7 @@ namespace Platine\Orm;
 
 use Closure;
 use Platine\Database\Connection;
+use Platine\Database\Query\Expression;
 use Platine\Database\Query\Insert;
 use Platine\Database\Query\Update;
 use Platine\Orm\Entity;
@@ -59,7 +60,7 @@ use Platine\Orm\RepositoryInterface;
 
 
 /**
- * Class Repository
+ * @class Repository
  * @package Platine\Orm
  */
 class Repository implements RepositoryInterface
@@ -90,6 +91,30 @@ class Repository implements RepositoryInterface
     protected bool $immediate = false;
 
     /**
+     * The order by column(s)
+     * @var string|Closure|Expression|string[]|Expression[]|Closure[]
+     */
+    protected $orderColumns = '';
+
+    /**
+     * The order direction
+     * @var string
+     */
+    protected string $orderDir = 'ASC';
+
+    /**
+     * The offset to use
+     * @var int
+     */
+    protected int $offset = -1;
+
+    /**
+     * The limit to use
+     * @var int
+     */
+    protected int $limit = 0;
+
+    /**
      * Create new instance
      * @param EntityManager $manager
      * @param class-string $entityClass
@@ -112,8 +137,24 @@ class Repository implements RepositoryInterface
         }
         $this->immediate = false;
 
-        return $this->manager->query($this->entityClass)
-                             ->with($with, $immediate);
+        $query = $this->manager->query($this->entityClass);
+        $query->with($with, $immediate);
+
+        if (!empty($this->orderColumns)) {
+            $query->orderBy($this->orderColumns, $this->orderDir);
+            $this->orderColumns = '';
+            $this->orderDir = 'ASC';
+        }
+
+        if ($this->offset >= 0 && $this->limit >= 0) {
+            $query->offset($this->offset)
+                  ->limit($this->limit);
+
+            $this->offset = -1;
+            $this->limit = 0;
+        }
+
+        return $query;
     }
 
     /**
@@ -126,6 +167,28 @@ class Repository implements RepositoryInterface
         }
         $this->with = $with;
         $this->immediate = $immediate;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritedoc}
+     */
+    public function orderBy($columns, string $order = 'ASC'): self
+    {
+        $this->orderColumns = $columns;
+        $this->orderDir = $order;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritedoc}
+     */
+    public function limit(int $offset, int $limit): self
+    {
+        $this->offset = $offset;
+        $this->limit = $limit;
 
         return $this;
     }
