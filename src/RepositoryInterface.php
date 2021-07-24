@@ -89,6 +89,13 @@ interface RepositoryInterface
     public function limit(int $offset, int $limit): self;
 
     /**
+     * Apply an filters on the query
+     * @param array<string, mixed> $filters
+     * @return $this
+     */
+    public function filters(array $filters = []): self;
+
+    /**
      * Create the instance of Entity
      * @param array<int, string> $columns initial data
      * @return Entity

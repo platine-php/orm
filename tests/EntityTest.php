@@ -125,6 +125,30 @@ class EntityTest extends PlatineTestCase
         $this->assertEquals($e->id, 1);
     }
 
+    public function testToString(): void
+    {
+        $eMapper = $this->getEntityMapper([], []);
+        $eManager = $this->getEntityManager([], []);
+        $columns = [
+            'foo' => 'bar',
+            'id' => 1
+        ];
+        $loaders = [];
+        $readOnly = false;
+        $isNew = false;
+
+        $e = $this->getEntityInstance(
+            $eManager,
+            $eMapper,
+            $columns,
+            $loaders,
+            $readOnly,
+            $isNew
+        );
+
+        $this->assertEquals($e->__toString(), '[Platine\Orm\Entity(foo=bar, id=1)]');
+    }
+
     public function testGetUsingRelation(): void
     {
         $related = 123;

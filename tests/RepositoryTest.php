@@ -216,6 +216,37 @@ class RepositoryTest extends PlatineTestCase
         $this->assertFalse($rImmediate->getValue($e));
     }
 
+    public function testFindUsingFilters(): void
+    {
+        $eq = $this->getMockBuilder(EntityQuery::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $eq->expects($this->exactly(1))
+                ->method('filter')
+                ->will($this->returnSelf());
+
+        $eq->expects($this->exactly(1))
+                ->method('find')
+                ->will($this->returnValue(null));
+
+        $entityClass = get_class($this->getEntityInstance([]));
+        $manager = $this->getEntityManager([
+            'query' => $eq
+        ], []);
+
+        $manager->expects($this->exactly(1))
+                ->method('query')
+                ->with($entityClass);
+
+        $e = new Repository($manager, $entityClass);
+        $res = $e->filters(['foo' => 1])->find(1);
+        $this->assertNull($res);
+
+        //Already reset after each query
+        $this->assertEmpty($this->getPropertyValue(Repository::class, $e, 'filters'));
+    }
+
     public function testFindOrderBy(): void
     {
         $eq = $this->getMockBuilder(EntityQuery::class)

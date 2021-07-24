@@ -115,6 +115,12 @@ class Repository implements RepositoryInterface
     protected int $limit = 0;
 
     /**
+     * The filters list
+     * @var array<string, mixed>
+     */
+    protected array $filters = [];
+
+    /**
      * Create new instance
      * @param EntityManager $manager
      * @param class-string $entityClass
@@ -142,6 +148,7 @@ class Repository implements RepositoryInterface
 
         if (!empty($this->orderColumns)) {
             $query->orderBy($this->orderColumns, $this->orderDir);
+
             $this->orderColumns = '';
             $this->orderDir = 'ASC';
         }
@@ -152,6 +159,12 @@ class Repository implements RepositoryInterface
 
             $this->offset = -1;
             $this->limit = 0;
+        }
+
+        if (!empty($this->filters)) {
+            $query->filter($this->filters);
+
+            $this->filters = [];
         }
 
         return $query;
@@ -193,6 +206,15 @@ class Repository implements RepositoryInterface
         return $this;
     }
 
+    /**
+     * {@inheritedoc}
+     */
+    public function filters(array $filters = []): self
+    {
+        $this->filters = $filters;
+
+        return $this;
+    }
 
     /**
      * {@inheritedoc}

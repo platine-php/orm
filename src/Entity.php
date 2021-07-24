@@ -152,6 +152,21 @@ abstract class Entity
     }
 
     /**
+     * Return the string representation of this entity
+     * @return string
+     */
+    public function __toString(): string
+    {
+        $columns = $this->mapper()->getRawColumns();
+        $columnsStr = '';
+        foreach ($columns as $name => $value) {
+            $columnsStr .= sprintf('%s=%s, ', $name, (string) $value);
+        }
+
+        return sprintf('[%s(%s)]', __CLASS__, rtrim($columnsStr, ', '));
+    }
+
+        /**
      * Map the entity information
      * @param EntityMapperInterface $mapper
      */
