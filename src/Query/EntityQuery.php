@@ -103,7 +103,7 @@ class EntityQuery extends Query
 
     /**
      * Apply an filter(s) to the query
-     * @param string|array<int, string> $names
+     * @param string|array<int, string>|array<string, mixed> $names
      * @return $this
      */
     public function filter($names): self

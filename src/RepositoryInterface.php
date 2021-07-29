@@ -97,7 +97,7 @@ interface RepositoryInterface
 
     /**
      * Create the instance of Entity
-     * @param array<int, string> $columns initial data
+     * @param array<string, mixed> $columns initial data
      * @return Entity
      */
     public function create(array $columns = []): Entity;
