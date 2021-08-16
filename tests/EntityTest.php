@@ -50,6 +50,29 @@ class EntityTest extends PlatineTestCase
         $this->assertInstanceOf(EntityMapper::class, $dm[1]);
     }
 
+    public function testJsonXml(): void
+    {
+        $eMapper = $this->getEntityMapper([], []);
+        $eManager = $this->getEntityManager([], []);
+        $columns = [];
+        $loaders = [];
+        $readOnly = false;
+        $isNew = false;
+
+        $e = $this->getEntityInstance(
+            $eManager,
+            $eMapper,
+            $columns,
+            $loaders,
+            $readOnly,
+            $isNew
+        );
+
+        $this->assertEmpty($e->toXml());
+        $this->assertCount(1, $e->toJson());
+        $this->assertArrayHasKey('foo', $e->toJson());
+    }
+
     public function testDataMapperInstance(): void
     {
         $eMapper = $this->getEntityMapper([], []);
@@ -356,6 +379,18 @@ class EntityTest extends PlatineTestCase
 
             public static function mapEntity(EntityMapperInterface $mapper): void
             {
+            }
+
+            public function toJson(): array
+            {
+                return [
+                    'foo' => 'bar'
+                ];
+            }
+
+            public function toXml(): array
+            {
+                return [];
             }
         };
     }

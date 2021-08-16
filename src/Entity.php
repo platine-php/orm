@@ -99,6 +99,24 @@ abstract class Entity
     }
 
     /**
+     * Convert entity to JSON array
+     * @return array<string, mixed>
+     */
+    public function toJson(): array
+    {
+        return [];
+    }
+
+    /**
+     * Convert entity to XML array
+     * @return array<string, mixed>
+     */
+    public function toXml(): array
+    {
+        return [];
+    }
+
+    /**
      * Shortcut to DataMapper getColumn and getRelated
      * @param string $name
      * @return mixed
