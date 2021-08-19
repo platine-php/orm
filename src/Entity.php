@@ -46,6 +46,7 @@ declare(strict_types=1);
 
 namespace Platine\Orm;
 
+use JsonSerializable;
 use Platine\Orm\Exception\PropertyNotFoundException;
 use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\DataMapperInterface;
@@ -56,7 +57,7 @@ use Platine\Orm\Mapper\EntityMapperInterface;
  * Class Entity
  * @package Platine\Orm
  */
-abstract class Entity
+abstract class Entity implements JsonSerializable
 {
 
     /**
@@ -102,18 +103,9 @@ abstract class Entity
      * Convert entity to JSON array
      * @return array<string, mixed>
      */
-    public function toJson(): array
+    public function jsonSerialize()
     {
-        return [];
-    }
-
-    /**
-     * Convert entity to XML array
-     * @return array<string, mixed>
-     */
-    public function toXml(): array
-    {
-        return [];
+       return []; 
     }
 
     /**
