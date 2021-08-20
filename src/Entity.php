@@ -105,7 +105,17 @@ abstract class Entity implements JsonSerializable
      */
     public function jsonSerialize()
     {
-       return []; 
+        $rawColumns = $this->mapper()->getRawColumns();
+        $data = [];
+        foreach ($rawColumns as $columnName) {
+            if ($this->mapper()->hasRelation($columnName)) {
+                $data[$columnName] = $this->mapper()->getRelated($columnName);
+            } elseif ($this->mapper()->hasColumn($columnName)) {
+                $data[$columnName] = $this->mapper()->getColumn($columnName);
+            }
+        }
+
+        return $data;
     }
 
     /**
