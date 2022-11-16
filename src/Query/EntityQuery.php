@@ -133,12 +133,12 @@ class EntityQuery extends Query
     /**
      * Return one entity record
      * @param array<int, string> $columns
-     *
+     * @param bool $primaryColumn
      * @return Entity|null
      */
-    public function get(array $columns = []): ?Entity
+    public function get(array $columns = [], bool $primaryColumn = true): ?Entity
     {
-        $result = $this->query($columns)
+        $result = $this->query($columns, $primaryColumn)
                        ->fetchAssoc()
                        ->get();
 
@@ -161,12 +161,12 @@ class EntityQuery extends Query
     /**
      * Return the list of entities
      * @param array<int, string> $columns
-     *
+     * @param bool $primaryColumn
      * @return array<int, Entity>
      */
-    public function all(array $columns = []): array
+    public function all(array $columns = [], bool $primaryColumn = true): array
     {
-        $results = $this->query($columns)
+        $results = $this->query($columns, $primaryColumn)
                         ->fetchAssoc()
                         ->all();
 
@@ -417,11 +417,12 @@ class EntityQuery extends Query
     /**
      * Execute query and return the result set
      * @param array<int, string> $columns
+     * @param bool $primaryColumn
      * @return ResultSet
      */
-    protected function query(array $columns = []): ResultSet
+    protected function query(array $columns = [], bool $primaryColumn = true): ResultSet
     {
-        if (!$this->buildQuery()->locked && !empty($columns)) {
+        if (!$this->buildQuery()->locked && !empty($columns) && $primaryColumn) {
             foreach ($this->mapper->getPrimaryKey()->columns() as $pkColumn) {
                 $columns[] = $pkColumn;
             }
