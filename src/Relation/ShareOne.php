@@ -52,7 +52,6 @@ namespace Platine\Orm\Relation;
  */
 class ShareOne extends ShareRelation
 {
-
     /**
      * {@inheritedoc}
      */

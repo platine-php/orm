@@ -52,7 +52,6 @@ namespace Platine\Orm\Relation;
  */
 class HasOne extends HasRelation
 {
-
     /**
      * {@inheritedoc}
      */

@@ -64,7 +64,6 @@ use Platine\Orm\Relation\RelationLoader;
  */
 class BelongsTo extends Relation
 {
-
     /**
      *
      * @param DataMapper $owner

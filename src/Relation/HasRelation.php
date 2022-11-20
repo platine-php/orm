@@ -61,7 +61,6 @@ use Platine\Orm\Query\Query;
  */
 abstract class HasRelation extends Relation
 {
-
     /**
      * Whether is many or not
      * @var bool

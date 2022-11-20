@@ -65,7 +65,6 @@ use Platine\Orm\RepositoryInterface;
  */
 class Repository implements RepositoryInterface
 {
-
     /**
      * The entity class
      * @var class-string

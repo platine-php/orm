@@ -61,7 +61,6 @@ use RuntimeException;
  */
 class Proxy
 {
-
     /**
      * The Entity data mapper arguments property
      * @var ReflectionProperty

@@ -429,7 +429,6 @@ class BelongsToTest extends PlatineTestCase
 
         return new class ($em, $dm, $columns) extends Entity
         {
-
             public static function mapEntity(EntityMapperInterface $mapper): void
             {
             }

@@ -20,7 +20,6 @@ use Platine\Dev\PlatineTestCase;
  */
 class ProxyTest extends PlatineTestCase
 {
-
     public function testGetInstance(): void
     {
         $this->assertInstanceOf(Proxy::class, Proxy::instance());
@@ -104,7 +103,6 @@ class ProxyTest extends PlatineTestCase
     ): Entity {
         return new class ($em, $m, $columns, $loaders, $isReadOnly, $isNew) extends Entity
         {
-
             public static function mapEntity(EntityMapperInterface $mapper): void
             {
             }

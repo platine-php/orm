@@ -56,7 +56,6 @@ use Platine\Orm\Mapper\EntityMapper;
  */
 abstract class Relation
 {
-
     /**
      * Query callback
      * @var callable|null

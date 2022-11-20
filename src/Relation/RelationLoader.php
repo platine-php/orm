@@ -57,7 +57,6 @@ use Platine\Orm\Query\EntityQuery;
  */
 class RelationLoader
 {
-
     /**
      *
      * @var EntityQuery

@@ -22,7 +22,6 @@ use Platine\Orm\Relation\ShareMany;
  */
 class EntityTest extends PlatineTestCase
 {
-
     public function testDefaultValues(): void
     {
         $eMapper = $this->getEntityMapper([], []);
@@ -376,7 +375,6 @@ class EntityTest extends PlatineTestCase
     ): Entity {
         return new class ($em, $m, $columns, $loaders, $isReadOnly, $isNew) extends Entity
         {
-
             public static function mapEntity(EntityMapperInterface $mapper): void
             {
             }

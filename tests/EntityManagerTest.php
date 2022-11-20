@@ -87,7 +87,6 @@ class EntityManagerTest extends PlatineTestCase
 
         return new class ($em, $dm) extends Entity
         {
-
             public static function mapEntity(EntityMapperInterface $mapper): void
             {
             }

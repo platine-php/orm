@@ -59,7 +59,6 @@ use Platine\Orm\Mapper\EntityMapperInterface;
  */
 abstract class Entity implements JsonSerializable
 {
-
     /**
      * The instance of data mapper
      * @var DataMapper|null

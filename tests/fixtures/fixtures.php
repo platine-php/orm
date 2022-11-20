@@ -16,7 +16,6 @@ use Platine\Database\ResultSet;
 */
 class PDOMock extends PDO
 {
-
     /**
     * Disable the default constructor
     */
@@ -33,7 +32,6 @@ class PDOMock extends PDO
 
 class Connection extends RealConnection
 {
-
     private string $rawSql = '';
 
     public function __construct($driver)

@@ -59,7 +59,6 @@ use Platine\Database\Query\QueryStatement;
  */
 class Query extends BaseStatement
 {
-
     /**
      *
      * @var HavingStatement

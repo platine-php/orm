@@ -31,7 +31,6 @@ use stdClass;
  */
 class DataMapperTest extends PlatineTestCase
 {
-
     public function testDefaultValues(): void
     {
         $eMapper = $this->getEntityMapper([], []);
@@ -1315,7 +1314,6 @@ class DataMapperTest extends PlatineTestCase
 
         return new class ($em, $dm, $columns) extends Entity
         {
-
             public static function mapEntity(EntityMapperInterface $mapper): void
             {
             }

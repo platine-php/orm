@@ -59,7 +59,6 @@ use RuntimeException;
  */
 class EntityManager
 {
-
     /**
      * The connection
      * @var Connection

@@ -1274,7 +1274,6 @@ class RepositoryTest extends PlatineTestCase
         }
         return new class ($em, $mapper, $columns) extends Entity
         {
-
             public static function mapEntity(EntityMapperInterface $mapper): void
             {
             }

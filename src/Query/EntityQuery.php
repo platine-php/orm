@@ -61,12 +61,11 @@ use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Relation\RelationLoader;
 
 /**
- * Class EntityQuery
+ * @class EntityQuery
  * @package Platine\Orm\Query
  */
 class EntityQuery extends Query
 {
-
     /**
      *
      * @var EntityManager
@@ -99,6 +98,15 @@ class EntityQuery extends Query
         parent::__construct($queryStatement);
         $this->manager = $manager;
         $this->mapper = $mapper;
+    }
+
+    /**
+     * Return the connection instance
+     * @return Connection
+     */
+    public function getConnection(): Connection
+    {
+        return $this->manager->getConnection();
     }
 
     /**

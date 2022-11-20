@@ -7,6 +7,7 @@ namespace Platine\Test\Orm\Query;
 use Platine\Database\Query\HavingStatement;
 use Platine\Database\Query\QueryStatement;
 use Platine\Database\ResultSet;
+use Platine\Dev\PlatineTestCase;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Mapper\DataMapper;
@@ -16,8 +17,8 @@ use Platine\Orm\Query\EntityQuery;
 use Platine\Orm\Relation\BelongsTo;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\RelationLoader;
-use Platine\Dev\PlatineTestCase;
-use Platine\Test\Fixture\Orm\Connection;
+use Platine\Test\Fixture\Orm\Connection as MyConnection;
+use Platine\Database\Connection;
 
 /**
  * EntityQuery class tests
@@ -39,6 +40,7 @@ class EntityQueryTest extends PlatineTestCase
         $this->assertInstanceOf(QueryStatement::class, $e->getQueryStatement());
         $this->assertInstanceOf(EntityManager::class, $rManager->getValue($e));
         $this->assertInstanceOf(EntityMapper::class, $rMapper->getValue($e));
+        $this->assertInstanceOf(Connection::class, $e->getConnection());
     }
 
     public function testClone(): void
@@ -76,7 +78,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testDelete(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $entityMapper = $this->getEntityMapper([
             'getTable' => 'foo'
@@ -96,7 +98,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testDeleteUsingSoftDelete(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $entityMapper = $this->getEntityMapper([
             'getTable' => 'foo',
@@ -119,7 +121,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testQueryWithSoftDelete(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $primaryKey = $this->getMockBuilder(PrimaryKey::class)
                             ->disableOriginalConstructor()
@@ -156,7 +158,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testQueryOnlyWithSoftDelete(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $primaryKey = $this->getMockBuilder(PrimaryKey::class)
                             ->disableOriginalConstructor()
@@ -194,7 +196,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testUpdate(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $entityMapper = $this->getEntityMapper([
             'getTable' => 'foo'
@@ -214,7 +216,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testUpdateUsingTimestamps(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $entityMapper = $this->getEntityMapper([
             'getTable' => 'foo',
@@ -239,7 +241,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testIncrementUsingTimestamps(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $entityMapper = $this->getEntityMapper([
             'getTable' => 'foo',
@@ -277,7 +279,7 @@ class EntityQueryTest extends PlatineTestCase
                 ->method('get')
                 ->will($this->returnValue(false));
 
-        $cnx = $this->getMockBuilder(Connection::class)
+        $cnx = $this->getMockBuilder(MyConnection::class)
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -328,7 +330,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testColumnWithSoftDelete(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $primaryKey = $this->getMockBuilder(PrimaryKey::class)
                             ->disableOriginalConstructor()
@@ -367,7 +369,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testColumnOnlySoftDelete(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $primaryKey = $this->getMockBuilder(PrimaryKey::class)
                             ->disableOriginalConstructor()
@@ -482,7 +484,7 @@ class EntityQueryTest extends PlatineTestCase
 
     public function testAggregate(): void
     {
-        $cnx = new Connection('MySQL');
+        $cnx = new MyConnection('MySQL');
 
         $entityMapper = $this->getEntityMapper([
             'getTable' => 'foo'
@@ -522,7 +524,7 @@ class EntityQueryTest extends PlatineTestCase
                 ->method('get')
                 ->will($this->returnValue([['id' => 1, 'user_id' => 3]]));
 
-        $cnx = $this->getMockBuilder(Connection::class)
+        $cnx = $this->getMockBuilder(MyConnection::class)
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -573,7 +575,7 @@ class EntityQueryTest extends PlatineTestCase
                 ->method('all')
                 ->will($this->returnValue([['id' => 1, 'user_id' => 3]]));
 
-        $cnx = $this->getMockBuilder(Connection::class)
+        $cnx = $this->getMockBuilder(MyConnection::class)
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -678,7 +680,6 @@ class EntityQueryTest extends PlatineTestCase
 
         return new class ($em, $dm, $columns) extends Entity
         {
-
             public static function mapEntity(EntityMapperInterface $mapper): void
             {
             }

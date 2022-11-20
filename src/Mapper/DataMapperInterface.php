@@ -54,7 +54,6 @@ use Platine\Orm\Entity;
  */
 interface DataMapperInterface
 {
-
     /**
      * Whether the record is new
      * @return bool

@@ -68,7 +68,6 @@ use Platine\Orm\Relation\RelationLoader;
  */
 abstract class ShareRelation extends Relation
 {
-
     /**
      * Whether is many or not
      * @var bool
