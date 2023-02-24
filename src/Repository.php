@@ -160,13 +160,25 @@ class Repository implements RepositoryInterface
             $this->limit = 0;
         }
 
+        $this->setFilters($query);
+
+        return $query;
+    }
+    
+    /**
+     * Set the filters
+     * @param EntityQuery $query
+     * @return $this
+     */
+    protected function setFilters(EntityQuery $query): self
+    {
         if (!empty($this->filters)) {
             $query->filter($this->filters);
 
             $this->filters = [];
         }
-
-        return $query;
+        
+        return $this;
     }
 
     /**
