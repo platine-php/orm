@@ -309,9 +309,13 @@ class DataMapper implements DataMapperInterface
     /**
      * {@inheritedoc}
      */
-    public function clearColumn(string $name): void
+    public function clearColumn(string $name, bool $raw = false): void
     {
         unset($this->columns[$name]);
+        
+        if($raw){
+            unset($this->rawColumns[$name]);
+        }
     }
 
      /**

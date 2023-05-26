@@ -171,6 +171,16 @@ abstract class Entity implements JsonSerializable
         return $this->mapper()->hasRelation($name)
                 || $this->mapper()->hasColumn($name);
     }
+    
+    /**
+     * Shortcut to DataMapper clearColumn
+     * @param string $name
+     * @return bool
+     */
+    public function __unset(string $name)
+    {
+        $this->mapper()->clearColumn($name, true);
+    }
 
     /**
      * Return the string representation of this entity

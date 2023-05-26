@@ -772,6 +772,10 @@ class DataMapperTest extends PlatineTestCase
         $e->clearColumn('foo');
         //Only columns data is cleared not raw columns
         $this->assertEquals(23, $e->getColumn('foo'));
+        
+        $e->clearColumn('foo', true);
+        $this->expectException(PropertyNotFoundException::class);
+        $e->getColumn('foo');
     }
 
     public function testFillSuccess(): void

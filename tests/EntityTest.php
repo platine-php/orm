@@ -364,6 +364,31 @@ class EntityTest extends PlatineTestCase
         $this->assertTrue(isset($e->id));
         $this->assertFalse(isset($e->idf));
     }
+    
+    public function testUnset(): void
+    {
+        $eMapper = $this->getEntityMapper([], []);
+        $eManager = $this->getEntityManager([], []);
+        $columns = [];
+        $loaders = [];
+        $readOnly = false;
+        $isNew = false;
+
+        $e = $this->getEntityInstance(
+            $eManager,
+            $eMapper,
+            $columns,
+            $loaders,
+            $readOnly,
+            $isNew
+        );
+
+        $e->id = 100;
+
+        $this->assertTrue(isset($e->id));
+        unset($e->id);
+        $this->assertFalse(isset($e->id));
+    }
 
     private function getEntityInstance(
         EntityManager $em,

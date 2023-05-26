@@ -126,10 +126,11 @@ interface DataMapperInterface
     /**
      * Clear the value for the given column
      * @param string $name
+     * @param bool $raw whether to clear raw column too
      *
      * @return void
      */
-    public function clearColumn(string $name): void;
+    public function clearColumn(string $name, bool $raw = false): void;
 
     /**
      * Set the raw value for the given column
