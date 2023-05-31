@@ -343,7 +343,7 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function count($column = '*', bool $distinct = true)
+    public function count($column = '*', bool $distinct = false)
     {
         (new ColumnExpression($this->queryStatement))->count($column, null, $distinct);
 
@@ -356,7 +356,7 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function avg($column, bool $distinct = true)
+    public function avg($column, bool $distinct = false)
     {
         (new ColumnExpression($this->queryStatement))->avg($column, null, $distinct);
 
@@ -369,7 +369,7 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function sum($column, bool $distinct = true)
+    public function sum($column, bool $distinct = false)
     {
         (new ColumnExpression($this->queryStatement))->sum($column, null, $distinct);
 
@@ -382,7 +382,7 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function min($column, bool $distinct = true)
+    public function min($column, bool $distinct = false)
     {
         (new ColumnExpression($this->queryStatement))->min($column, null, $distinct);
 
@@ -395,7 +395,7 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function max($column, bool $distinct = true)
+    public function max($column, bool $distinct = false)
     {
         (new ColumnExpression($this->queryStatement))->max($column, null, $distinct);
 
