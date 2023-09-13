@@ -364,7 +364,7 @@ class EntityTest extends PlatineTestCase
         $this->assertTrue(isset($e->id));
         $this->assertFalse(isset($e->idf));
     }
-    
+
     public function testUnset(): void
     {
         $eMapper = $this->getEntityMapper([], []);

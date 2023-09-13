@@ -37,7 +37,7 @@
  *  @author Platine Developers Team
  *  @copyright  Copyright (c) 2020
  *  @license    http://opensource.org/licenses/MIT  MIT License
- *  @link   http://www.iacademy.cf
+ *  @link   https://www.platine-php.com
  *  @version 1.0.0
  *  @filesource
  */
@@ -164,7 +164,7 @@ class Repository implements RepositoryInterface
 
         return $query;
     }
-    
+
     /**
      * Set the filters
      * @param EntityQuery $query
@@ -177,7 +177,7 @@ class Repository implements RepositoryInterface
 
             $this->filters = [];
         }
-        
+
         return $this;
     }
 

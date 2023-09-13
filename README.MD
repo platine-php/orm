@@ -6,7 +6,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/platine-php/orm/v/unstable)](https://packagist.org/packages/platine-php/orm)
 [![Total Downloads](https://poser.pugx.org/platine-php/orm/downloads)](https://packagist.org/packages/platine-php/orm)
 [![License](https://poser.pugx.org/platine-php/orm/license)](https://packagist.org/packages/platine-php/orm)
-[![Build Status](https://img.shields.io/travis/platine-php/orm/develop.svg?style=flat-square)](https://travis-ci.com/platine-php/orm)  
+[![Build Status](https://img.shields.io/travis/com/platine-php/orm?style=flat-square)](https://travis-ci.com/platine-php/orm)  
 [![Quality Score](https://img.shields.io/scrutinizer/g/platine-php/orm.svg?style=flat-square)](https://scrutinizer-ci.com/g/platine-php/orm)
 [![Maintainability](https://api.codeclimate.com/v1/badges/5722b474126d86d58e57/maintainability)](https://codeclimate.com/github/platine-php/orm/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/5722b474126d86d58e57/test_coverage)](https://codeclimate.com/github/platine-php/orm/test_coverage)
