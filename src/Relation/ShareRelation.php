@@ -265,8 +265,10 @@ abstract class ShareRelation extends Relation
         }, $this->foreignKey->columns()));
 
         $select->join($joinTable, function (Join $join) use ($junctionTable, $joinTable) {
-            foreach ($this->junction->columns() as $pkColumn => $fkColumn) {
-                $join->on($junctionTable . '.' . $fkColumn, $joinTable . '.' . $pkColumn);
+            if ($this->junction !== null) {
+                foreach ($this->junction->columns() as $pkColumn => $fkColumn) {
+                    $join->on($junctionTable . '.' . $fkColumn, $joinTable . '.' . $pkColumn);
+                }
             }
         });
 
@@ -369,8 +371,10 @@ abstract class ShareRelation extends Relation
         };
 
         $select->join($joinTable, function (Join $join) use ($junctionTable, $joinTable) {
-            foreach ($this->junction->columns() as $pkColumn => $fkColumn) {
-                $join->on($junctionTable . '.' . $fkColumn, $joinTable . '.' . $pkColumn);
+            if ($this->junction !== null) {
+                foreach ($this->junction->columns() as $pkColumn => $fkColumn) {
+                    $join->on($junctionTable . '.' . $fkColumn, $joinTable . '.' . $pkColumn);
+                }
             }
         });
 

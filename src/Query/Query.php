@@ -284,6 +284,7 @@ class Query extends BaseStatement
         $extra = [];
 
         foreach ($this->with as $key => /** @var string|Closure $value */ $value) {
+            /** @var string $fullName */
             $fullName = $value;
             $callback = null;
 

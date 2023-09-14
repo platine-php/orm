@@ -62,6 +62,7 @@ use Platine\Orm\RepositoryInterface;
 /**
  * @class Repository
  * @package Platine\Orm
+ * @implements RepositoryInterface<Entity>
  */
 class Repository implements RepositoryInterface
 {
@@ -183,6 +184,7 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function with($with, bool $immediate = false): self
     {
@@ -197,6 +199,7 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function orderBy($columns, string $order = 'ASC'): self
     {
@@ -208,6 +211,7 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function limit(int $offset, int $limit): self
     {
@@ -219,6 +223,7 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function filters(array $filters = []): self
     {

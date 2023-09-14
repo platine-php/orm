@@ -51,8 +51,9 @@ use Platine\Database\Query\Expression;
 use Platine\Orm\Query\EntityQuery;
 
 /**
- * Class RepositoryInterface
+ * @class RepositoryInterface
  * @package Platine\Orm
+ * @template TEntity as Entity
  */
 interface RepositoryInterface
 {
@@ -98,34 +99,34 @@ interface RepositoryInterface
     /**
      * Create the instance of Entity
      * @param array<string, mixed> $columns initial data
-     * @return Entity
+     * @return TEntity
      */
     public function create(array $columns = []): Entity;
 
     /**
      * Shortcut to "insert" and "update" the entity in data store
-     * @param Entity $entity
+     * @param TEntity $entity
      * @return bool
      */
     public function save(Entity $entity): bool;
 
     /**
      * Save the new entity in data store
-     * @param Entity $entity
+     * @param TEntity $entity
      * @return mixed the primary key(s) value(s)
      */
     public function insert(Entity $entity);
 
     /**
      * Update the existing entity in data store
-     * @param Entity $entity
+     * @param TEntity $entity
      * @return bool
      */
     public function update(Entity $entity): bool;
 
     /**
      * Delete the entity
-     * @param Entity $entity
+     * @param TEntity $entity
      * @param bool $force
      * @return bool
      */
@@ -134,7 +135,7 @@ interface RepositoryInterface
     /**
      *
      * @param array<int, string> $columns
-     * @return array<int, Entity>
+     * @return TEntity[]
      */
     public function all(array $columns = []): array;
 
@@ -142,7 +143,7 @@ interface RepositoryInterface
      * Find one entity instance
      * @param mixed $id
      *
-     * @return Entity|null
+     * @return TEntity|null
      */
     public function find($id): ?Entity;
 
@@ -150,21 +151,21 @@ interface RepositoryInterface
      * Find one entity instance using some conditions
      * @param array<string, mixed> $conditions
      *
-     * @return Entity|null
+     * @return TEntity|null
      */
     public function findBy(array $conditions): ?Entity;
 
     /**
      * Find the list of record using many primary key
      * @param mixed ...$ids
-     * @return array<int, Entity>
+     * @return TEntity[]
      */
     public function findAll(...$ids): array;
 
     /**
      * Find the list of record using some conditions
      * @param array<string, mixed> $conditions
-     * @return array<int, Entity>
+     * @return TEntity[]
      */
     public function findAllBy(array $conditions): array;
 }
