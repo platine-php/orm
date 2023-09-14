@@ -47,8 +47,10 @@ declare(strict_types=1);
 namespace Platine\Orm\Relation;
 
 /**
- * Class HasMany
+ * @class HasMany
  * @package Platine\Orm\Relation
+ * @template TEntity as \Platine\Orm\Entity
+ * @extends HasRelation<TEntity>
  */
 class HasMany extends HasRelation
 {

@@ -52,8 +52,10 @@ use Platine\Orm\Relation\Relation;
 use Platine\Orm\Relation\RelationFactory;
 
 /**
- * Class EntityMapper
+ * @class EntityMapper
  * @package Platine\Orm\Mapper
+ * @template TEntity as \Platine\Orm\Entity
+ * @implements EntityMapperInterface<TEntity>
  */
 class EntityMapper implements EntityMapperInterface
 {
@@ -65,7 +67,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * The full entity class
-     * @var string
+     * @var class-string<TEntity>
      */
     protected string $entityClass;
 
@@ -83,7 +85,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * The entity primary key
-     * @var PrimaryKey|null
+     * @var PrimaryKey<TEntity>|null
      */
     protected ?PrimaryKey $primaryKey = null;
 
@@ -119,7 +121,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * The list of entity relations
-     * @var array<string, Relation>
+     * @var array<string, Relation<TEntity>>
      */
     protected array $relations = [];
 
@@ -175,7 +177,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * Create new instance
-     * @param string $entityClass
+     * @param class-string<TEntity> $entityClass
      */
     public function __construct(string $entityClass)
     {
@@ -184,6 +186,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function name(string $name): self
     {
@@ -194,6 +197,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function table(string $table): self
     {
@@ -204,6 +208,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function primaryKey(string ...$primaryKey): self
     {
@@ -214,6 +219,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function primaryKeyGenerator(callable $generator): self
     {
@@ -224,6 +230,7 @@ class EntityMapper implements EntityMapperInterface
 
      /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function sequence(string $sequence): self
     {
@@ -234,6 +241,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function casts(array $columns): self
     {
@@ -244,6 +252,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function fillable(array $columns): self
     {
@@ -254,6 +263,7 @@ class EntityMapper implements EntityMapperInterface
 
      /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function guarded(array $columns): self
     {
@@ -264,6 +274,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function filter(string $name, callable $filter): self
     {
@@ -274,6 +285,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function getter(string $column, callable $getter): self
     {
@@ -284,6 +296,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function setter(string $column, callable $setter): self
     {
@@ -294,6 +307,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function on(string $name, callable $handler): self
     {
@@ -308,6 +322,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return RelationFactory<TEntity>
      */
     public function relation(string $name): RelationFactory
     {
@@ -318,6 +333,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function useSoftDelete(
         bool $value = true,
@@ -331,6 +347,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
+     * @return $this<TEntity>
      */
     public function useTimestamp(
         bool $value = true,
@@ -344,8 +361,8 @@ class EntityMapper implements EntityMapperInterface
     }
 
     /**
-     *
-     * @return string
+     * Return the entity class
+     * @return class-string<TEntity>
      */
     public function getEntityClass(): string
     {
@@ -394,7 +411,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      *
-     * @return PrimaryKey
+     * @return PrimaryKey<TEntity>
      */
     public function getPrimaryKey(): PrimaryKey
     {
@@ -439,7 +456,7 @@ class EntityMapper implements EntityMapperInterface
             {
                 /**
                  *
-                 * @param PrimaryKey $primaryKey
+                 * @param PrimaryKey<TEntity> $primaryKey
                  * @param string $prefix
                  */
                 public function __construct(PrimaryKey $primaryKey, string $prefix)
@@ -496,7 +513,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      *
-     * @return array<string, Relation>
+     * @return array<string, Relation<TEntity>>
      */
     public function getRelations(): array
     {

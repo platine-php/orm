@@ -63,8 +63,10 @@ use Platine\Orm\Relation\Relation;
 use Platine\Orm\Relation\RelationLoader;
 
 /**
- * Class ShareRelation
+ * @class ShareRelation
  * @package Platine\Orm\Relation
+ * @template TEntity as Entity
+ * @extends Relation<TEntity>
  */
 abstract class ShareRelation extends Relation
 {
@@ -82,7 +84,7 @@ abstract class ShareRelation extends Relation
 
     /**
      * Create new instance
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
      * @param Junction|null $junction
      */
@@ -97,8 +99,8 @@ abstract class ShareRelation extends Relation
 
         /**
      *
-     * @param DataMapper $mapper
-     * @param Entity $entity
+     * @param DataMapper<TEntity> $mapper
+     * @param TEntity $entity
      *
      * @return bool
      */
@@ -139,8 +141,8 @@ abstract class ShareRelation extends Relation
 
     /**
      *
-     * @param DataMapper $mapper
-     * @param Entity $entity
+     * @param DataMapper<TEntity> $mapper
+     * @param TEntity $entity
      *
      * @return bool
      */
@@ -184,7 +186,9 @@ abstract class ShareRelation extends Relation
 
     /**
      * {@inheritedoc}
-     * @return RelationLoader
+     * @param EntityManager<TEntity> $manager
+     * @param EntityMapper<TEntity> $owner
+     * @return RelationLoader<TEntity>
      */
     public function getLoader(EntityManager $manager, EntityMapper $owner, array $options): RelationLoader
     {
@@ -213,6 +217,7 @@ abstract class ShareRelation extends Relation
         }
 
         $queryStatement = new QueryStatement();
+        
         $select = new class ($manager, $related, $queryStatement, $junctionTable) extends EntityQuery
         {
             /**
@@ -223,8 +228,8 @@ abstract class ShareRelation extends Relation
 
             /**
              *
-             * @param EntityManager $manager
-             * @param EntityMapper $mapper
+             * @param EntityManager<TEntity> $manager
+             * @param EntityMapper<TEntity> $mapper
              * @param QueryStatement $queryStatement
              * @param string $table
              */
@@ -240,7 +245,7 @@ abstract class ShareRelation extends Relation
 
             /**
              *
-             * @return EntityQuery
+             * @return EntityQuery<TEntity>
              */
             protected function buildQuery(): EntityQuery
             {
@@ -304,6 +309,7 @@ abstract class ShareRelation extends Relation
 
     /**
      * {@inheritedoc}
+     * @param DataMapper<TEntity> $mapper
      */
     public function getResult(DataMapper $mapper, ?callable $callback = null)
     {
@@ -333,8 +339,8 @@ abstract class ShareRelation extends Relation
 
             /**
              *
-             * @param EntityManager $manager
-             * @param EntityMapper $mapper
+             * @param EntityManager<TEntity> $manager
+             * @param EntityMapper<TEntity> $mapper
              * @param QueryStatement $queryStatement
              * @param string $table
              */
@@ -350,7 +356,7 @@ abstract class ShareRelation extends Relation
 
             /**
              *
-             * @return EntityQuery
+             * @return EntityQuery<TEntity>
              */
             protected function buildQuery(): EntityQuery
             {
@@ -406,8 +412,8 @@ abstract class ShareRelation extends Relation
 
     /**
      * Build Junction instance
-     * @param EntityMapper $owner
-     * @param EntityMapper $related
+     * @param EntityMapper<TEntity> $owner
+     * @param EntityMapper<TEntity> $related
      * @return Junction
      */
     protected function buildJunction(EntityMapper $owner, EntityMapper $related): Junction
@@ -416,8 +422,8 @@ abstract class ShareRelation extends Relation
         {
             /**
              *
-             * @param EntityMapper $owner
-             * @param EntityMapper $related
+             * @param EntityMapper<TEntity> $owner
+             * @param EntityMapper<TEntity> $related
              */
             public function __construct(EntityMapper $owner, EntityMapper $related)
             {

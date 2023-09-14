@@ -51,8 +51,9 @@ use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\Proxy;
 
 /**
- * Class PrimaryKey
+ * @class PrimaryKey
  * @package Platine\Orm\Relation
+ * @template TEntity as Entity
  */
 class PrimaryKey
 {
@@ -124,7 +125,7 @@ class PrimaryKey
 
     /**
      * Get the value from data mapper
-     * @param DataMapper $mapper
+     * @param DataMapper<TEntity> $mapper
      * @param bool $map
      *
      * @return mixed|array<string, mixed>|null
@@ -136,7 +137,7 @@ class PrimaryKey
 
     /**
      *
-     * @param Entity $entity
+     * @param TEntity $entity
      * @param bool $map
      * @return mixed|array<string, mixed>|null
      */

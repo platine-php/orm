@@ -54,8 +54,9 @@ use ReflectionException;
 use RuntimeException;
 
 /**
- * Class EntityManager
+ * @class EntityManager
  * @package Platine\Orm
+ * @template TEntity as Entity
  */
 class EntityManager
 {
@@ -73,7 +74,7 @@ class EntityManager
 
     /**
      * The cache of already resolved entities mappers
-     * @var array<string, EntityMapper>
+     * @var array<string, EntityMapper<TEntity>>
      */
     protected array $entityMappers = [];
 
@@ -107,8 +108,8 @@ class EntityManager
 
     /**
      * Get an instance of EntityQuery
-     * @param class-string $entityClass
-     * @return EntityQuery
+     * @param class-string<TEntity> $entityClass
+     * @return EntityQuery<TEntity>
      */
     public function query(string $entityClass): EntityQuery
     {
@@ -117,8 +118,8 @@ class EntityManager
 
     /**
      * Resolve the entity mapper for the given entity class
-     * @param class-string $entityClass
-     * @return EntityMapper
+     * @param class-string<TEntity> $entityClass
+     * @return EntityMapper<TEntity>
      */
     public function getEntityMapper(string $entityClass): EntityMapper
     {

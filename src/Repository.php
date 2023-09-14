@@ -63,7 +63,7 @@ use Platine\Orm\RepositoryInterface;
  * @class Repository
  * @package Platine\Orm
  * @template TEntity as Entity
- * @implements RepositoryInterface<Entity>
+ * @implements RepositoryInterface<TEntity>
  */
 class Repository implements RepositoryInterface
 {
@@ -75,7 +75,7 @@ class Repository implements RepositoryInterface
 
     /**
      *
-     * @var EntityManager
+     * @var EntityManager<TEntity>
      */
     protected EntityManager $manager;
 
@@ -123,7 +123,7 @@ class Repository implements RepositoryInterface
 
     /**
      * Create new instance
-     * @param EntityManager $manager
+     * @param EntityManager<TEntity> $manager
      * @param class-string<TEntity> $entityClass
      */
     public function __construct(EntityManager $manager, string $entityClass)
@@ -169,7 +169,7 @@ class Repository implements RepositoryInterface
 
     /**
      * Set the filters
-     * @param EntityQuery $query
+     * @param EntityQuery<TEntity> $query
      * @return $this
      */
     protected function setFilters(EntityQuery $query): self

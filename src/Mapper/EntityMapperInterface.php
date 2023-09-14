@@ -49,8 +49,9 @@ namespace Platine\Orm\Mapper;
 use Platine\Orm\Relation\RelationFactory;
 
 /**
- * Class EntityMapperInterface
+ * @class EntityMapperInterface
  * @package Platine\Orm\Mapper
+ * @template TEntity as \Platine\Orm\Entity
  */
 interface EntityMapperInterface
 {
@@ -128,7 +129,7 @@ interface EntityMapperInterface
     /**
      * Set the relation between Entity
      * @param string $name
-     * @return RelationFactory
+     * @return RelationFactory<TEntity>
      */
     public function relation(string $name): RelationFactory;
 

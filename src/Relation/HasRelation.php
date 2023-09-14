@@ -56,8 +56,10 @@ use Platine\Orm\Query\EntityQuery;
 use Platine\Orm\Query\Query;
 
 /**
- * Class HasRelation
+ * @class HasRelation
  * @package Platine\Orm\Relation
+ * @template TEntity as Entity
+ * @extends Relation<TEntity>
  */
 abstract class HasRelation extends Relation
 {
@@ -69,7 +71,7 @@ abstract class HasRelation extends Relation
 
     /**
      * Create new instance
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
      */
     public function __construct(
@@ -81,8 +83,8 @@ abstract class HasRelation extends Relation
 
     /**
      *
-     * @param DataMapper $owner
-     * @param Entity $entity
+     * @param DataMapper<TEntity> $owner
+     * @param TEntity $entity
      *
      * @return void
      */
@@ -104,7 +106,9 @@ abstract class HasRelation extends Relation
 
     /**
      * {@inheritedoc}
-     * @return RelationLoader
+     * @param EntityManager<TEntity> $manager
+     * @param EntityMapper<TEntity> $owner
+     * @return RelationLoader<TEntity>
      */
     public function getLoader(EntityManager $manager, EntityMapper $owner, array $options): RelationLoader
     {
@@ -155,6 +159,7 @@ abstract class HasRelation extends Relation
 
     /**
      * {@inheritedoc}
+     * @param DataMapper<TEntity> $mapper
      */
     public function getResult(DataMapper $mapper, ?callable $callback = null)
     {

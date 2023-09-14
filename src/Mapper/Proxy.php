@@ -56,8 +56,9 @@ use ReflectionProperty;
 use RuntimeException;
 
 /**
- * Class Proxy
+ * @class Proxy
  * @package Platine\Orm\Mapper
+ * @template TEntity as Entity
  */
 class Proxy
 {
@@ -90,8 +91,8 @@ class Proxy
 
     /**
      * Get the data mapper instance for the given entity
-     * @param Entity $entity
-     * @return DataMapper
+     * @param TEntity $entity
+     * @return DataMapper<TEntity>
      */
     public function getEntityDataMapper(Entity $entity): DataMapper
     {
@@ -100,7 +101,7 @@ class Proxy
 
     /**
      * Return the columns list
-     * @param Entity $entity
+     * @param TEntity $entity
      * @return array<string, mixed>
      */
     public function getEntityColumns(Entity $entity): array
@@ -116,6 +117,12 @@ class Proxy
         //@codeCoverageIgnoreEnd
     }
 
+    /**
+     * Return the instance
+     * @staticvar type $proxy
+     * @return Proxy<TEntity>
+     * @throws RuntimeException
+     */
     public static function instance(): Proxy
     {
         static $proxy = null;

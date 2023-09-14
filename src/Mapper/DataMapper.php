@@ -57,15 +57,14 @@ use Platine\Orm\Mapper\DataMapperInterface;
 use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Relation\BelongsTo;
 use Platine\Orm\Relation\HasRelation;
-use Platine\Orm\Relation\Relation;
-use Platine\Orm\Relation\ShareMany;
-use Platine\Orm\Relation\ShareOne;
 use Platine\Orm\Relation\ShareRelation;
 use RuntimeException;
 
 /**
- * Class DataMapper
+ * @class DataMapper
  * @package Platine\Orm\Mapper
+ * @template TEntity as Entity
+ * @implements DataMapperInterface<TEntity>
  */
 class DataMapper implements DataMapperInterface
 {
@@ -83,19 +82,19 @@ class DataMapper implements DataMapperInterface
 
     /**
      * The list of relation loaders
-     * @var array<string, \Platine\Orm\Relation\RelationLoader>
+     * @var array<string, RelationLoader<TEntity>>
      */
     protected array $loaders = [];
-
+    
     /**
      * The Entity manager instance
-     * @var EntityManager
+     * @var EntityManager<TEntity>
      */
     protected EntityManager $manager;
 
     /**
      *
-     * @var EntityMapper
+     * @var EntityMapper<TEntity>
      */
     protected EntityMapper $mapper;
 
@@ -149,8 +148,8 @@ class DataMapper implements DataMapperInterface
 
     /**
      * Create new instance
-     * @param EntityManager $manager
-     * @param EntityMapper $mapper
+     * @param EntityManager<TEntity> $manager
+     * @param EntityMapper<TEntity> $mapper
      * @param array<string, mixed> $columns
      * @param array<string, mixed> $loaders
      * @param bool $isReadOnly
@@ -179,7 +178,7 @@ class DataMapper implements DataMapperInterface
 
     /**
      *
-     * @return EntityManager
+     * @return EntityManager<TEntity>
      */
     public function getEntityManager(): EntityManager
     {
@@ -188,7 +187,7 @@ class DataMapper implements DataMapperInterface
 
     /**
      *
-     * @return EntityMapper
+     * @return EntityMapper<TEntity>
      */
     public function getEntityMapper(): EntityMapper
     {
@@ -362,7 +361,7 @@ class DataMapper implements DataMapperInterface
             return $this->relations[$name];
         }
 
-        /** @var array<string, \Platine\Orm\Relation\Relation> $relations */
+        /** @var array<string, \Platine\Orm\Relation\Relation<TEntity>> $relations */
         $relations = $this->mapper->getRelations();
 
         $cacheKey = $name;
@@ -409,7 +408,7 @@ class DataMapper implements DataMapperInterface
             ));
         }
 
-        /** @var Relation $rel */
+        /** @var Relation<TEntity> $rel */
         $rel = $relations[$name];
 
         if (!($rel instanceof BelongsTo) && !($rel instanceof HasRelation)) {
@@ -561,7 +560,7 @@ class DataMapper implements DataMapperInterface
     public function executePendingLinkage(): void
     {
         foreach ($this->pendingLinks as $item) {
-            /** @var ShareOne|ShareMany $rel */
+            /** @var ShareOne<TEntity>|ShareMany<TEntity> $rel */
             $rel = $item['relation'];
 
             if (isset($item['link'])) {
@@ -716,7 +715,7 @@ class DataMapper implements DataMapperInterface
     /**
      * Set
      * @param string $relation
-     * @param Entity $entity
+     * @param TEntity $entity
      * @param bool $link
      * @return void
      */
@@ -731,7 +730,7 @@ class DataMapper implements DataMapperInterface
             ));
         }
 
-        /** @var ShareRelation $rel  */
+        /** @var ShareRelation<TEntity> $rel  */
         $rel = $relations[$relation];
         if (!($rel instanceof ShareRelation)) {
             throw new RuntimeException('Unsupported relation type');

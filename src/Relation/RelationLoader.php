@@ -46,20 +46,20 @@ declare(strict_types=1);
 
 namespace Platine\Orm\Relation;
 
-use Platine\Orm\Entity;
 use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\Proxy;
 use Platine\Orm\Query\EntityQuery;
 
 /**
- * Class RelationLoader
+ * @class RelationLoader
  * @package Platine\Orm\Relation
+ * @template TEntity as \Platine\Orm\Entity
  */
 class RelationLoader
 {
     /**
      *
-     * @var EntityQuery
+     * @var EntityQuery<TEntity>
      */
     protected EntityQuery $query;
 
@@ -83,7 +83,7 @@ class RelationLoader
 
     /**
      * The result entity query results
-     * @var null|array<int, Entity>
+     * @var null|TEntity[]
      */
     protected $results = [];
 
@@ -95,7 +95,7 @@ class RelationLoader
 
     /**
      * Create new instance
-     * @param EntityQuery $query
+     * @param EntityQuery<TEntity> $query
      * @param ForeignKey $foreignKey
      * @param bool $inverse
      * @param bool $hasMany
@@ -120,8 +120,8 @@ class RelationLoader
 
     /**
      * Get the result for the given data mapper
-     * @param DataMapper $mapper
-     * @return null|Entity|array<int, Entity>
+     * @param DataMapper<TEntity> $mapper
+     * @return null|TEntity|TEntity[]
      */
     public function getResult(DataMapper $mapper)
     {
@@ -155,7 +155,7 @@ class RelationLoader
 
     /**
      * Load the results
-     * @return array<int, Entity>
+     * @return TEntity[]
      */
     protected function loadResults(): array
     {

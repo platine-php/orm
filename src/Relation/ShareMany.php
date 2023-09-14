@@ -47,8 +47,10 @@ declare(strict_types=1);
 namespace Platine\Orm\Relation;
 
 /**
- * Class ShareMany
+ * @class ShareMany
  * @package Platine\Orm\Relation
+ * @template TEntity as \Platine\Orm\Entity
+ * @extends ShareRelation<TEntity>
  */
 class ShareMany extends ShareRelation
 {

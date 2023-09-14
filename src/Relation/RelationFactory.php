@@ -49,8 +49,9 @@ namespace Platine\Orm\Relation;
 use Closure;
 
 /**
- * Class RelationFactory
+ * @class RelationFactory
  * @package Platine\Orm\Relation
+ * @template TEntity as \Platine\Orm\Entity
  */
 class RelationFactory
 {
@@ -79,9 +80,9 @@ class RelationFactory
 
     /**
      * Set has one relation
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
-     * @return Relation
+     * @return Relation<TEntity>
      */
     public function hasOne(string $entityClass, ?ForeignKey $foreignKey = null): Relation
     {
@@ -90,9 +91,9 @@ class RelationFactory
 
     /**
      * Set has many relation
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
-     * @return Relation
+     * @return Relation<TEntity>
      */
     public function hasMany(string $entityClass, ?ForeignKey $foreignKey = null): Relation
     {
@@ -101,9 +102,9 @@ class RelationFactory
 
     /**
      * Set belongs to relation
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
-     * @return Relation
+     * @return Relation<TEntity>
      */
     public function belongsTo(string $entityClass, ?ForeignKey $foreignKey = null): Relation
     {
@@ -112,10 +113,10 @@ class RelationFactory
 
     /**
      * Set share one relation
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
      * @param Junction|null $junction
-     * @return Relation
+     * @return Relation<TEntity>
      */
     public function shareOne(
         string $entityClass,
@@ -131,10 +132,10 @@ class RelationFactory
 
     /**
      * Set share many relation
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
      * @param Junction|null $junction
-     * @return Relation
+     * @return Relation<TEntity>
      */
     public function shareMany(
         string $entityClass,

@@ -49,8 +49,9 @@ namespace Platine\Orm\Mapper;
 use Platine\Orm\Entity;
 
 /**
- * Class DataMapperInterface
+ * @class DataMapperInterface
  * @package Platine\Orm\Mapper
+ * @template TEntity as Entity
  */
 interface DataMapperInterface
 {
@@ -153,7 +154,7 @@ interface DataMapperInterface
     /**
      * Set the value for the given relation
      * @param string $name
-     * @param Entity|null $entity
+     * @param TEntity|null $entity
      *
      * @return void
      */
@@ -170,7 +171,7 @@ interface DataMapperInterface
     /**
      * Make a link between for the given relation and entity
      * @param string $relation
-     * @param Entity $entity
+     * @param TEntity $entity
      * @return void
      */
     public function link(string $relation, Entity $entity): void;
@@ -178,7 +179,7 @@ interface DataMapperInterface
     /**
      * Remove the link between for the given relation and entity
      * @param string $relation
-     * @param Entity $entity
+     * @param TEntity $entity
      * @return void
      */
     public function unlink(string $relation, Entity $entity): void;

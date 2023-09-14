@@ -61,7 +61,7 @@ interface RepositoryInterface
      * Return the instance of EntityQuery
      * @param string|array<int, string>|array<string, Closure> $with
      * @param bool $immediate
-     * @return EntityQuery
+     * @return EntityQuery<TEntity>
      */
     public function query($with = [], bool $immediate = false): EntityQuery;
 

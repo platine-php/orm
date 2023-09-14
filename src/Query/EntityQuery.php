@@ -63,18 +63,19 @@ use Platine\Orm\Relation\RelationLoader;
 /**
  * @class EntityQuery
  * @package Platine\Orm\Query
+ * @template TEntity as Entity
  */
 class EntityQuery extends Query
 {
     /**
      *
-     * @var EntityManager
+     * @var EntityManager<TEntity>
      */
     protected EntityManager $manager;
 
     /**
      *
-     * @var EntityMapper
+     * @var EntityMapper<TEntity>
      */
     protected EntityMapper $mapper;
 
@@ -86,8 +87,8 @@ class EntityQuery extends Query
 
     /**
      * Create new instance
-     * @param EntityManager $manager
-     * @param EntityMapper $mapper
+     * @param EntityManager<TEntity> $manager
+     * @param EntityMapper<TEntity> $mapper
      * @param QueryStatement|null $queryStatement
      */
     public function __construct(
@@ -142,7 +143,7 @@ class EntityQuery extends Query
      * Return one entity record
      * @param array<int, string> $columns
      * @param bool $primaryColumn
-     * @return Entity|null
+     * @return TEntity|null
      */
     public function get(array $columns = [], bool $primaryColumn = true): ?Entity
     {
@@ -170,7 +171,7 @@ class EntityQuery extends Query
      * Return the list of entities
      * @param array<int, string> $columns
      * @param bool $primaryColumn
-     * @return array<int, Entity>
+     * @return TEntity[]
      */
     public function all(array $columns = [], bool $primaryColumn = true): array
     {
@@ -280,7 +281,7 @@ class EntityQuery extends Query
      * Find entity record using primary key value
      * @param mixed $id
      *
-     * @return Entity|null
+     * @return TEntity|null
      */
     public function find($id): ?Entity
     {
@@ -300,7 +301,7 @@ class EntityQuery extends Query
      * Find entities record using primary key values
      * @param mixed ...$ids
      *
-     * @return array<int, Entity>
+     * @return TEntity[]
      */
     public function findAll(...$ids): array
     {
@@ -458,7 +459,7 @@ class EntityQuery extends Query
     /**
      * Return the relations data loaders
      * @param array<int, mixed>|false $results
-     * @return array<string, \Platine\Orm\Relation\RelationLoader>
+     * @return array<string, \Platine\Orm\Relation\RelationLoader<TEntity>>
      */
     protected function getRelationLoaders($results): array
     {
@@ -475,7 +476,7 @@ class EntityQuery extends Query
                 continue;
             }
 
-            /** @var RelationLoader $loader */
+            /** @var RelationLoader<TEntity> $loader */
             $loader = $relations[$with]->getLoader($this->manager, $this->mapper, [
                 'results' => $results,
                 'callback' => $callback,

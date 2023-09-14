@@ -59,15 +59,17 @@ use Platine\Orm\Relation\Relation;
 use Platine\Orm\Relation\RelationLoader;
 
 /**
- * Class BelongsTo
+ * @class BelongsTo
  * @package Platine\Orm\Relation
+ * @template TEntity as Entity
+ * @extends Relation<TEntity>
  */
 class BelongsTo extends Relation
 {
     /**
      *
-     * @param DataMapper $owner
-     * @param Entity|null $entity
+     * @param DataMapper<TEntity> $owner
+     * @param TEntity|null $entity
      *
      * @return void
      */
@@ -96,7 +98,9 @@ class BelongsTo extends Relation
 
     /**
      * {@inheritedoc}
-     * @return RelationLoader
+     * @param EntityManager<TEntity> $manager
+     * @param EntityMapper<TEntity> $owner
+     * @return RelationLoader<TEntity>
      */
     public function getLoader(EntityManager $manager, EntityMapper $owner, array $options): RelationLoader
     {
@@ -149,7 +153,8 @@ class BelongsTo extends Relation
 
     /**
      * {@inheritedoc}
-     * @return Entity|null
+     * @param DataMapper<TEntity> $mapper
+     * @return TEntity|null
      */
     public function getResult(DataMapper $mapper, ?callable $callback = null)
     {

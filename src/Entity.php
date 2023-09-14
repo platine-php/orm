@@ -54,14 +54,15 @@ use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\EntityMapperInterface;
 
 /**
- * Class Entity
+ * @class Entity
  * @package Platine\Orm
+ * @template TEntity as Entity
  */
 abstract class Entity implements JsonSerializable
 {
     /**
      * The instance of data mapper
-     * @var DataMapper|null
+     * @var DataMapper<TEntity> |null
      */
     private ?DataMapper $dataMapper = null;
 
@@ -73,10 +74,10 @@ abstract class Entity implements JsonSerializable
 
     /**
      *
-     * @param EntityManager $manager
-     * @param EntityMapper $mapper
+     * @param EntityManager<TEntity> $manager
+     * @param EntityMapper<TEntity>  $mapper
      * @param array<string, mixed> $columns
-     * @param array<string, \Platine\Orm\Relation\RelationLoader> $loaders
+     * @param array<string, \Platine\Orm\Relation\RelationLoader<TEntity>> $loaders
      * @param bool $isReadOnly
      * @param bool $isNew
      */
@@ -199,13 +200,13 @@ abstract class Entity implements JsonSerializable
 
         /**
      * Map the entity information
-     * @param EntityMapperInterface $mapper
+     * @param EntityMapperInterface<TEntity> $mapper
      */
     abstract public static function mapEntity(EntityMapperInterface $mapper): void;
 
     /**
      * Return the instance of data mapper
-     * @return DataMapperInterface
+     * @return DataMapperInterface<TEntity>
      */
     final protected function mapper(): DataMapperInterface
     {

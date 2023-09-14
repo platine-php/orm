@@ -51,8 +51,9 @@ use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\EntityMapper;
 
 /**
- * Class Relation
+ * @class Relation
  * @package Platine\Orm\Relation
+ * @template TEntity as \Platine\Orm\Entity
  */
 abstract class Relation
 {
@@ -64,7 +65,7 @@ abstract class Relation
 
     /**
      * The entity class
-     * @var class-string
+     * @var class-string<TEntity>
      */
     protected string $entityClass;
 
@@ -76,7 +77,7 @@ abstract class Relation
 
     /**
      * Create new instance
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
      */
     public function __construct(string $entityClass, ?ForeignKey $foreignKey = null)
@@ -88,7 +89,7 @@ abstract class Relation
     /**
      * Set query callback
      * @param callable $callback
-     * @return $this
+     * @return $this<TEntity>
      */
     public function query(callable $callback): self
     {
@@ -98,8 +99,8 @@ abstract class Relation
     }
 
     /**
-     * @param EntityManager $manager
-     * @param EntityMapper $owner
+     * @param EntityManager<TEntity> $manager
+     * @param EntityMapper<TEntity> $owner
      * @param array<string, mixed> $options the loader options
      *
      * @return mixed
@@ -111,7 +112,7 @@ abstract class Relation
     );
 
     /**
-     * @param DataMapper $mapper
+     * @param DataMapper<TEntity> $mapper
      * @param callable|null $callback
      *
      * @return mixed

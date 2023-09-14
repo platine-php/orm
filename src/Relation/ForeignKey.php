@@ -47,7 +47,7 @@ declare(strict_types=1);
 namespace Platine\Orm\Relation;
 
 /**
- * Class ForeignKey
+ * @class ForeignKey
  * @package Platine\Orm\Relation
  */
 class ForeignKey
