@@ -62,13 +62,14 @@ use Platine\Orm\RepositoryInterface;
 /**
  * @class Repository
  * @package Platine\Orm
+ * @template TEntity as Entity
  * @implements RepositoryInterface<Entity>
  */
 class Repository implements RepositoryInterface
 {
     /**
      * The entity class
-     * @var class-string
+     * @var class-string<TEntity>
      */
     protected string $entityClass;
 
@@ -123,7 +124,7 @@ class Repository implements RepositoryInterface
     /**
      * Create new instance
      * @param EntityManager $manager
-     * @param class-string $entityClass
+     * @param class-string<TEntity> $entityClass
      */
     public function __construct(EntityManager $manager, string $entityClass)
     {
