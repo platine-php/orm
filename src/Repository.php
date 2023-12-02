@@ -167,21 +167,6 @@ class Repository implements RepositoryInterface
         return $query;
     }
 
-    /**
-     * Set the filters
-     * @param EntityQuery<TEntity> $query
-     * @return $this
-     */
-    protected function setFilters(EntityQuery $query): self
-    {
-        if (!empty($this->filters)) {
-            $query->filter($this->filters);
-
-            $this->filters = [];
-        }
-
-        return $this;
-    }
 
     /**
      * {@inheritedoc}
@@ -488,5 +473,21 @@ class Repository implements RepositoryInterface
         $data->markAsDeleted();
 
         return true;
+    }
+	
+	/**
+     * Set the filters
+     * @param EntityQuery<TEntity> $query
+     * @return $this
+     */
+    protected function setFilters(EntityQuery $query): self
+    {
+        if (!empty($this->filters)) {
+            $query->filter($this->filters);
+
+            $this->filters = [];
+        }
+
+        return $this;
     }
 }
