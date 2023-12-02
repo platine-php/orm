@@ -474,8 +474,8 @@ class Repository implements RepositoryInterface
 
         return true;
     }
-	
-	/**
+
+    /**
      * Set the filters
      * @param EntityQuery<TEntity> $query
      * @return $this

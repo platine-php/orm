@@ -85,7 +85,7 @@ class DataMapper implements DataMapperInterface
      * @var array<string, RelationLoader<TEntity>>
      */
     protected array $loaders = [];
-    
+
     /**
      * The Entity manager instance
      * @var EntityManager<TEntity>

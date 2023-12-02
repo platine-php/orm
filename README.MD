@@ -5,11 +5,10 @@
 [![Latest Stable Version](https://poser.pugx.org/platine-php/orm/v)](https://packagist.org/packages/platine-php/orm)
 [![Latest Unstable Version](https://poser.pugx.org/platine-php/orm/v/unstable)](https://packagist.org/packages/platine-php/orm)
 [![Total Downloads](https://poser.pugx.org/platine-php/orm/downloads)](https://packagist.org/packages/platine-php/orm)
-[![License](https://poser.pugx.org/platine-php/orm/license)](https://packagist.org/packages/platine-php/orm)
-[![Build Status](https://img.shields.io/travis/com/platine-php/orm?style=flat-square)](https://travis-ci.com/platine-php/orm)  
+[![License](https://poser.pugx.org/platine-php/orm/license)](https://packagist.org/packages/platine-php/orm)  
 [![Quality Score](https://img.shields.io/scrutinizer/g/platine-php/orm.svg?style=flat-square)](https://scrutinizer-ci.com/g/platine-php/orm)
-[![Maintainability](https://api.codeclimate.com/v1/badges/5722b474126d86d58e57/maintainability)](https://codeclimate.com/github/platine-php/orm/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/5722b474126d86d58e57/test_coverage)](https://codeclimate.com/github/platine-php/orm/test_coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/852e352455644c8abd8209f2036eaab2)](https://app.codacy.com/gh/platine-php/orm/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/852e352455644c8abd8209f2036eaab2)](https://app.codacy.com/gh/platine-php/orm/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 
 ### Requirements 
 - **PHP >= 7.4**, **PHP 8** 
@@ -23,8 +22,8 @@ composer require platine-php/orm
 ### License
 MIT License See [LICENSE.MD](LICENSE.MD)
 
-### Documentation 
-Coming soon, be patient
+### Resources
+- [Documentation](https://docs.platine-php.com/packages/orm)
 
 ### Change make to opis/orm version 1.0.x-dev
 **Platine ORM** get inspiration from **opis/orm**. 

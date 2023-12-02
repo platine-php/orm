@@ -217,7 +217,7 @@ abstract class ShareRelation extends Relation
         }
 
         $queryStatement = new QueryStatement();
-        
+
         $select = new class ($manager, $related, $queryStatement, $junctionTable) extends EntityQuery
         {
             /**

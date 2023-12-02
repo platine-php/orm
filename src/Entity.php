@@ -110,7 +110,7 @@ abstract class Entity implements JsonSerializable
         foreach ($rawColumns as $name => $value) {
             if ($this->mapper()->hasRelation($name)) {
                 $relation = $this->mapper()->getRelated($name);
-                if($relation instanceof self){
+                if ($relation instanceof self) {
                     $data[$name] = $relation->jsonSerialize();
                 } else {
                     $data[$name] = $relation;
