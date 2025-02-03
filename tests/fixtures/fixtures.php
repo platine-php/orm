@@ -9,6 +9,16 @@ use PDOStatement;
 use PHPUnit\Framework\MockObject\Generator;
 use Platine\Database\Connection as RealConnection;
 use Platine\Database\ResultSet;
+use Platine\Orm\Entity;
+use Platine\Orm\Mapper\EntityMapperInterface;
+
+class MyEntity extends Entity
+{
+    public static function mapEntity(EntityMapperInterface $mapper): void
+    {
+        $mapper->relation('relation')->belongsTo(MyEntity::class);
+    }
+}
 
 /**
 * Class to mock PDO to prevent error:

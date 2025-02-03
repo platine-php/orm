@@ -13,6 +13,7 @@ use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\EntityMapperInterface;
 use Platine\Orm\Relation\BelongsTo;
 use Platine\Orm\Relation\ShareMany;
+use Platine\Test\Fixture\Orm\MyEntity;
 
 /**
  * Entity class tests
@@ -70,6 +71,42 @@ class EntityTest extends PlatineTestCase
         $this->assertCount(1, $e->jsonSerialize());
         $this->assertArrayHasKey('foo', $e->jsonSerialize());
         $this->assertEquals('{"foo":"bar"}', json_encode($e));
+    }
+
+    public function testJsonRealEntity(): void
+    {
+        $eMapper = $this->getEntityMapper([], []);
+        $eManager = $this->getEntityManager([], []);
+        $columns = [];
+        $loaders = [];
+        $readOnly = false;
+        $isNew = false;
+
+        $e = new MyEntity(
+            $eManager,
+            $eMapper,
+            $columns,
+            $loaders,
+            $readOnly,
+            $isNew
+        );
+
+        $er = new MyEntity(
+            $eManager,
+            $eMapper,
+            $columns,
+            $loaders,
+            $readOnly,
+            $isNew
+        );
+        $er->name = 'foo';
+
+        $e->foo = 'bar';
+        $e->relation = $er;
+
+        $this->assertCount(2, $e->jsonSerialize());
+        $this->assertArrayHasKey('foo', $e->jsonSerialize());
+        $this->assertEquals('{"foo":"bar","relation":{"name":"foo"}}', json_encode($e));
     }
 
     public function testDataMapperInstance(): void
