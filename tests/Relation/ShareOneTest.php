@@ -41,7 +41,7 @@ class ShareOneTest extends PlatineTestCase
 
         $foreignKey->expects($this->any())
                 ->method('columns')
-                ->will($this->returnValue(['id' => 1, 'user_id' => 2]));
+                ->will($this->returnValue(['id' => 'user_id']));
 
         $foreignKeyRelated = $this->getMockBuilder(ForeignKey::class)
                             ->disableOriginalConstructor()
@@ -49,7 +49,7 @@ class ShareOneTest extends PlatineTestCase
 
         $foreignKeyRelated->expects($this->any())
                 ->method('columns')
-                ->will($this->returnValue(['id' => 1, 'user_id' => 2]));
+                ->will($this->returnValue(['id' => 'user_id']));
 
         $entityMapper = $this->getEntityMapper([
             'getForeignKey' => $foreignKey,
@@ -100,7 +100,7 @@ class ShareOneTest extends PlatineTestCase
 
         $foreignKey->expects($this->any())
                 ->method('columns')
-                ->will($this->returnValue(['id' => 1, 'user_id' => 2]));
+                ->will($this->returnValue(['id' => 'user_id']));
 
         $foreignKeyRelated = $this->getMockBuilder(ForeignKey::class)
                             ->disableOriginalConstructor()
@@ -108,7 +108,7 @@ class ShareOneTest extends PlatineTestCase
 
         $foreignKeyRelated->expects($this->any())
                 ->method('columns')
-                ->will($this->returnValue(['id' => 1, 'user_id' => 2]));
+                ->will($this->returnValue(['id' => 'user_id']));
 
         $entityMapper = $this->getEntityMapper([
             'getForeignKey' => $foreignKey,

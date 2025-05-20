@@ -35,7 +35,7 @@ namespace Platine\Orm\Exception;
 use RuntimeException;
 
 /**
- * Class EntityStateException
+ * @class EntityStateException
  * @package Platine\Orm\Exception
  */
 class EntityStateException extends RuntimeException

@@ -48,7 +48,6 @@ namespace Platine\Orm\Mapper;
 
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\DataMapper;
-use Platine\Orm\Mapper\Proxy;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;

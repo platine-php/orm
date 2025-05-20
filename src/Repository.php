@@ -68,18 +68,6 @@ use Platine\Orm\RepositoryInterface;
 class Repository implements RepositoryInterface
 {
     /**
-     * The entity class
-     * @var class-string<TEntity>
-     */
-    protected string $entityClass;
-
-    /**
-     *
-     * @var EntityManager<TEntity>
-     */
-    protected EntityManager $manager;
-
-    /**
      * The list of relation to load with the query
      * @var array<int, string>|array<string, Closure>
      */
@@ -95,7 +83,7 @@ class Repository implements RepositoryInterface
      * The order by column(s)
      * @var string|Closure|Expression|string[]|Expression[]|Closure[]
      */
-    protected $orderColumns = '';
+    protected string|Closure|Expression|array $orderColumns = '';
 
     /**
      * The order direction
@@ -126,18 +114,22 @@ class Repository implements RepositoryInterface
      * @param EntityManager<TEntity> $manager
      * @param class-string<TEntity> $entityClass
      */
-    public function __construct(EntityManager $manager, string $entityClass)
-    {
-        $this->manager = $manager;
-        $this->entityClass = $entityClass;
+    public function __construct(
+        protected EntityManager $manager,
+        protected string $entityClass
+    ) {
     }
 
     /**
      * {@inheritedoc}
      */
-    public function query($with = [], bool $immediate = false): EntityQuery
+    public function query(string|array $with = [], bool $immediate = false): EntityQuery
     {
-        if (empty($with) && !empty($this->with)) {
+        if (is_string($with)) {
+            $with = [$with];
+        }
+
+        if (empty($with) && count($this->with) > 0) {
             $with = $this->with;
 
             $this->with = [];
@@ -170,9 +162,9 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return self<TEntity>
      */
-    public function with($with, bool $immediate = false): self
+    public function with(string|array $with, bool $immediate = false): self
     {
         if (!is_array($with)) {
             $with = [$with];
@@ -185,10 +177,12 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return self<TEntity>
      */
-    public function orderBy($columns, string $order = 'ASC'): self
-    {
+    public function orderBy(
+        string|Closure|Expression|array $columns,
+        string $order = 'ASC'
+    ): self {
         $this->orderColumns = $columns;
         $this->orderDir = $order;
 
@@ -197,7 +191,7 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return self<TEntity>
      */
     public function limit(int $offset, int $limit): self
     {
@@ -209,10 +203,14 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return self<TEntity>
      */
-    public function filters(array $filters = []): self
+    public function filters(string|array $filters = []): self
     {
+        if (is_string($filters)) {
+            $filters = [$filters => true];
+        }
+
         $this->filters = $filters;
 
         return $this;
@@ -246,7 +244,7 @@ class Repository implements RepositoryInterface
     /**
      * {@inheritedoc}
      */
-    public function find($id): ?Entity
+    public function find(array|string|int|float $id): ?Entity
     {
         return $this->query()->find($id);
     }
@@ -266,7 +264,7 @@ class Repository implements RepositoryInterface
     /**
      * {@inheritedoc}
      */
-    public function findAll(...$ids): array
+    public function findAll(mixed ...$ids): array
     {
         return $this->query()->findAll(...$ids);
     }
@@ -286,7 +284,7 @@ class Repository implements RepositoryInterface
     /**
      * {@inheritedoc}
      */
-    public function save(Entity $entity): bool
+    public function save(Entity $entity): array|string|int|float|bool|null
     {
         $data = Proxy::instance()->getEntityDataMapper($entity);
 
@@ -300,7 +298,7 @@ class Repository implements RepositoryInterface
     /**
      * {@inheritedoc}
      */
-    public function insert(Entity $entity)
+    public function insert(Entity $entity): array|string|int|float|false|null
     {
         $data = Proxy::instance()->getEntityDataMapper($entity);
         $mapper = $data->getEntityMapper();

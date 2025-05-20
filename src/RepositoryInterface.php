@@ -63,38 +63,41 @@ interface RepositoryInterface
      * @param bool $immediate
      * @return EntityQuery<TEntity>
      */
-    public function query($with = [], bool $immediate = false): EntityQuery;
+    public function query(string|array $with = [], bool $immediate = false): EntityQuery;
 
     /**
      * Load with relation
      * @param string|array<int, string>|array<string, Closure> $with
      * @param bool $immediate
-     * @return $this
+     * @return self<TEntity>
      */
-    public function with($with, bool $immediate = false): self;
+    public function with(string|array $with, bool $immediate = false): self;
 
     /**
      * Set order
      * @param string|Closure|Expression|string[]|Expression[]|Closure[] $columns
      * @param string $order
-     * @return $this
+     * @return self<TEntity>
      */
-    public function orderBy($columns, string $order = 'ASC'): self;
+    public function orderBy(
+        string|Closure|Expression|array $columns,
+        string $order = 'ASC'
+    ): self;
 
     /**
      * Add limit and offset
      * @param int $offset
      * @param int $limit
-     * @return $this
+     * @return self<TEntity>
      */
     public function limit(int $offset, int $limit): self;
 
     /**
      * Apply an filters on the query
-     * @param array<string, mixed> $filters
-     * @return $this
+     * @param string|array<string, mixed> $filters
+     * @return self<TEntity>
      */
-    public function filters(array $filters = []): self;
+    public function filters(string|array $filters = []): self;
 
     /**
      * Create the instance of Entity
@@ -106,16 +109,16 @@ interface RepositoryInterface
     /**
      * Shortcut to "insert" and "update" the entity in data store
      * @param TEntity $entity
-     * @return bool
+     * @return array<mixed>|string|int|float|bool|null
      */
-    public function save(Entity $entity): bool;
+    public function save(Entity $entity): array|string|int|float|bool|null;
 
     /**
      * Save the new entity in data store
      * @param TEntity $entity
-     * @return mixed the primary key(s) value(s)
+     * @return array<mixed>|string|int|float|false|null the primary key(s) value(s)
      */
-    public function insert(Entity $entity);
+    public function insert(Entity $entity): array|string|int|float|false|null;
 
     /**
      * Update the existing entity in data store
@@ -141,11 +144,11 @@ interface RepositoryInterface
 
     /**
      * Find one entity instance
-     * @param mixed $id
+     * @param array<mixed>|string|int|float $id
      *
      * @return TEntity|null
      */
-    public function find($id): ?Entity;
+    public function find(array|string|int|float $id): ?Entity;
 
     /**
      * Find one entity instance using some conditions
@@ -160,7 +163,7 @@ interface RepositoryInterface
      * @param mixed ...$ids
      * @return TEntity[]
      */
-    public function findAll(...$ids): array;
+    public function findAll(mixed ...$ids): array;
 
     /**
      * Find the list of record using some conditions

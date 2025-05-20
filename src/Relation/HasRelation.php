@@ -108,10 +108,15 @@ abstract class HasRelation extends Relation
      * {@inheritedoc}
      * @param EntityManager<TEntity> $manager
      * @param EntityMapper<TEntity> $owner
+     * @param array<string, mixed> $options
+     *
      * @return RelationLoader<TEntity>
      */
-    public function getLoader(EntityManager $manager, EntityMapper $owner, array $options): RelationLoader
-    {
+    public function getLoader(
+        EntityManager $manager,
+        EntityMapper $owner,
+        array $options
+    ): RelationLoader {
         $related = $manager->getEntityMapper($this->entityClass);
 
         if ($this->foreignKey === null) {
@@ -137,7 +142,7 @@ abstract class HasRelation extends Relation
         $foreignKeys = $this->foreignKey->getValue($ids, true);
         if (is_array($foreignKeys)) {
             foreach ($foreignKeys as $fkColumn => $fkValue) {
-                $select->where($fkColumn)->in($fkValue);
+                $select->where($fkColumn)->in([$fkValue]);
             }
         }
 
@@ -160,8 +165,10 @@ abstract class HasRelation extends Relation
     /**
      * {@inheritedoc}
      * @param DataMapper<TEntity> $mapper
+     *
+     * @return TEntity|array<TEntity>|null
      */
-    public function getResult(DataMapper $mapper, ?callable $callback = null)
+    public function getResult(DataMapper $mapper, ?callable $callback = null): Entity|array|null
     {
         $manager = $mapper->getEntityManager();
         $owner = $mapper->getEntityMapper();

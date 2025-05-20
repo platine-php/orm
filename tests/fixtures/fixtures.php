@@ -65,7 +65,7 @@ class Connection extends RealConnection
         return new ResultSet($stmt);
     }
 
-    public function column(string $sql, array $params = [])
+    public function column(string $sql, array $params = []): mixed
     {
         $this->rawSql =  $this->replaceParameters($sql, $params);
 
@@ -89,7 +89,7 @@ class Connection extends RealConnection
     public function transaction(
         callable $callback,
         $that = null
-    ) {
+    ): mixed {
         if ($that === null) {
             $that = $this;
         }

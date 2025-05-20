@@ -100,10 +100,15 @@ class BelongsTo extends Relation
      * {@inheritedoc}
      * @param EntityManager<TEntity> $manager
      * @param EntityMapper<TEntity> $owner
+     * @param array<string, mixed> $options
+     *
      * @return RelationLoader<TEntity>
      */
-    public function getLoader(EntityManager $manager, EntityMapper $owner, array $options): RelationLoader
-    {
+    public function getLoader(
+        EntityManager $manager,
+        EntityMapper $owner,
+        array $options
+    ): RelationLoader {
 
         $related = $manager->getEntityMapper($this->entityClass);
 
@@ -156,7 +161,7 @@ class BelongsTo extends Relation
      * @param DataMapper<TEntity> $mapper
      * @return TEntity|null
      */
-    public function getResult(DataMapper $mapper, ?callable $callback = null)
+    public function getResult(DataMapper $mapper, ?callable $callback = null): ?Entity
     {
         $manager = $mapper->getEntityManager();
         $related = $manager->getEntityMapper($this->entityClass);

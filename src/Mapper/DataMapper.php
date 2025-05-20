@@ -82,7 +82,7 @@ class DataMapper implements DataMapperInterface
 
     /**
      * The list of relation loaders
-     * @var array<string, RelationLoader<TEntity>>
+     * @var array<string, \Platine\Orm\Relation\RelationLoader<TEntity>>
      */
     protected array $loaders = [];
 
@@ -170,7 +170,7 @@ class DataMapper implements DataMapperInterface
         $this->isNew = $isNew;
         $this->rawColumns = $columns;
 
-        if ($isNew && !empty($columns)) {
+        if ($isNew && count($columns) > 0) {
             $this->rawColumns = [];
             $this->fill($columns);
         }
@@ -223,13 +223,13 @@ class DataMapper implements DataMapperInterface
      */
     public function wasModified(): bool
     {
-        return !empty($this->modified) || !empty($this->pendingLinks);
+        return count($this->modified) > 0 || count($this->pendingLinks) > 0;
     }
 
     /**
      * {@inheritedoc}
      */
-    public function getColumn(string $name)
+    public function getColumn(string $name): mixed
     {
         if ($this->refresh) {
             $this->hydrate();
@@ -274,7 +274,7 @@ class DataMapper implements DataMapperInterface
     /**
      * {@inheritedoc}
      */
-    public function setColumn(string $name, $value): void
+    public function setColumn(string $name, mixed $value): void
     {
         if ($this->isReadOnly) {
             throw new EntityStateException('The record is readonly');
@@ -345,7 +345,7 @@ class DataMapper implements DataMapperInterface
     /**
      * {@inheritedoc}
      */
-    public function setRawColumn(string $name, $value): void
+    public function setRawColumn(string $name, mixed $value): void
     {
         $this->modified[$name] = true;
         unset($this->columns[$name]);
@@ -355,7 +355,7 @@ class DataMapper implements DataMapperInterface
      /**
      * {@inheritedoc}
      */
-    public function getRelated(string $name, callable $callback = null)
+    public function getRelated(string $name, callable $callback = null): mixed
     {
         if (array_key_exists($name, $this->relations)) {
             return $this->relations[$name];
@@ -408,7 +408,7 @@ class DataMapper implements DataMapperInterface
             ));
         }
 
-        /** @var Relation<TEntity> $rel */
+        /** @var \Platine\Orm\Relation\Relation<TEntity> $rel */
         $rel = $relations[$name];
 
         if (!($rel instanceof BelongsTo) && !($rel instanceof HasRelation)) {
@@ -499,7 +499,7 @@ class DataMapper implements DataMapperInterface
      * @param mixed $id
      * @return bool
      */
-    public function markAsSaved($id): bool
+    public function markAsSaved(mixed $id): bool
     {
         $primaryKey = $this->mapper->getPrimaryKey();
         if (!$primaryKey->isComposite()) {
@@ -560,7 +560,7 @@ class DataMapper implements DataMapperInterface
     public function executePendingLinkage(): void
     {
         foreach ($this->pendingLinks as $item) {
-            /** @var ShareOne<TEntity>|ShareMany<TEntity> $rel */
+            /** @var \Platine\Orm\Relation\ShareOne<TEntity>|\Platine\Orm\Relation\ShareMany<TEntity> $rel */
             $rel = $item['relation'];
 
             if (isset($item['link'])) {
@@ -581,7 +581,7 @@ class DataMapper implements DataMapperInterface
      */
     protected function hydrate(): void
     {
-        if (!$this->refresh) {
+        if ($this->refresh === false) {
             return;
         }
 
@@ -615,7 +615,7 @@ class DataMapper implements DataMapperInterface
      *
      * @return mixed
      */
-    protected function castGet($value, string $type)
+    protected function castGet(mixed $value, string $type): mixed
     {
         $original = $type;
 
@@ -668,7 +668,7 @@ class DataMapper implements DataMapperInterface
      *
      * @return mixed
      */
-    protected function castSet($value, string $type)
+    protected function castSet(mixed $value, string $type): mixed
     {
         $original = $type;
 
@@ -730,7 +730,7 @@ class DataMapper implements DataMapperInterface
             ));
         }
 
-        /** @var ShareRelation<TEntity> $rel  */
+        /** @var \Platine\Orm\Relation\Relation<TEntity> $rel  */
         $rel = $relations[$relation];
         if (!($rel instanceof ShareRelation)) {
             throw new RuntimeException('Unsupported relation type');

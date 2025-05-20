@@ -35,7 +35,7 @@ namespace Platine\Orm\Exception;
 use RuntimeException;
 
 /**
- * Class RelationNotFoundException
+ * @class RelationNotFoundException
  * @package Platine\Orm\Exception
  */
 class RelationNotFoundException extends RuntimeException

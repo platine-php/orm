@@ -115,7 +115,7 @@ class EntityQuery extends Query
      * @param string|array<int, string>|array<string, mixed> $names
      * @return $this
      */
-    public function filter($names): self
+    public function filter(string|array $names): self
     {
         if (!is_array($names)) {
             $names = [$names];
@@ -170,7 +170,7 @@ class EntityQuery extends Query
     /**
      * Return the list of entities
      * @param array<int, string> $columns
-     * @param bool $primaryColumn
+     * @param bool $primaryColumn whether to return the primary key value
      * @return TEntity[]
      */
     public function all(array $columns = [], bool $primaryColumn = true): array
@@ -243,7 +243,7 @@ class EntityQuery extends Query
      * @param mixed $value
      * @return int
      */
-    public function increment($column, $value = 1): int
+    public function increment(string|array $column, mixed $value = 1): int
     {
         return (int) $this->transaction(function (Connection $connection) use ($column, $value) {
             if ($this->mapper->hasTimestamp()) {
@@ -263,7 +263,7 @@ class EntityQuery extends Query
      * @param mixed $value
      * @return int
      */
-    public function decrement($column, $value = 1): int
+    public function decrement(string|array $column, mixed $value = 1): int
     {
         return (int) $this->transaction(function (Connection $connection) use ($column, $value) {
             if ($this->mapper->hasTimestamp()) {
@@ -279,11 +279,11 @@ class EntityQuery extends Query
 
     /**
      * Find entity record using primary key value
-     * @param mixed $id
+     * @param string|int|float|array<string|int|float> $id
      *
      * @return TEntity|null
      */
-    public function find($id): ?Entity
+    public function find(string|int|float|array $id): ?Entity
     {
         if (is_array($id)) {
             foreach ($id as $pkColumn => $pkValue) {
@@ -303,7 +303,7 @@ class EntityQuery extends Query
      *
      * @return TEntity[]
      */
-    public function findAll(...$ids): array
+    public function findAll(mixed ...$ids): array
     {
         if (is_array($ids[0])) {
             $keys = array_keys($ids[0]);
@@ -331,7 +331,7 @@ class EntityQuery extends Query
      * @param string|Expression|Closure $column
      * @return mixed
      */
-    public function column($column)
+    public function column(string|Expression|Closure $column): mixed
     {
         (new ColumnExpression($this->queryStatement))->column($column);
 
@@ -344,8 +344,10 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function count($column = '*', bool $distinct = false)
-    {
+    public function count(
+        string|Expression|Closure $column = '*',
+        bool $distinct = false
+    ): mixed {
         (new ColumnExpression($this->queryStatement))->count($column, null, $distinct);
 
         return $this->executeAggregate();
@@ -357,8 +359,10 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function avg($column, bool $distinct = false)
-    {
+    public function avg(
+        string|Expression|Closure $column,
+        bool $distinct = false
+    ): mixed {
         (new ColumnExpression($this->queryStatement))->avg($column, null, $distinct);
 
         return $this->executeAggregate();
@@ -370,8 +374,10 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function sum($column, bool $distinct = false)
-    {
+    public function sum(
+        string|Expression|Closure $column,
+        bool $distinct = false
+    ): mixed {
         (new ColumnExpression($this->queryStatement))->sum($column, null, $distinct);
 
         return $this->executeAggregate();
@@ -383,7 +389,7 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function min($column, bool $distinct = false)
+    public function min(string|Expression|Closure $column, bool $distinct = false): mixed
     {
         (new ColumnExpression($this->queryStatement))->min($column, null, $distinct);
 
@@ -396,8 +402,10 @@ class EntityQuery extends Query
      * @param bool $distinct
      * @return mixed
      */
-    public function max($column, bool $distinct = false)
-    {
+    public function max(
+        string|Expression|Closure $column,
+        bool $distinct = false
+    ): mixed {
         (new ColumnExpression($this->queryStatement))->max($column, null, $distinct);
 
         return $this->executeAggregate();
@@ -406,7 +414,7 @@ class EntityQuery extends Query
     /**
      * Clone of object
      */
-    public function __clone()
+    public function __clone(): void
     {
         parent::__clone();
         $this->havingStatement = new HavingStatement($this->queryStatement);
@@ -461,7 +469,7 @@ class EntityQuery extends Query
      * @param array<int, mixed>|false $results
      * @return array<string, \Platine\Orm\Relation\RelationLoader<TEntity>>
      */
-    protected function getRelationLoaders($results): array
+    protected function getRelationLoaders(array|false $results): array
     {
         if (empty($this->with) || empty($results)) {
             return [];
@@ -496,7 +504,7 @@ class EntityQuery extends Query
      * Execute the aggregate
      * @return mixed
      */
-    protected function executeAggregate()
+    protected function executeAggregate(): mixed
     {
         $this->queryStatement->addTables([$this->mapper->getTable()]);
 
@@ -523,7 +531,7 @@ class EntityQuery extends Query
      */
     protected function isReadOnly(): bool
     {
-        return !empty($this->queryStatement->getJoins());
+        return count($this->queryStatement->getJoins()) > 0;
     }
 
     /**
@@ -532,7 +540,7 @@ class EntityQuery extends Query
      *
      * @return mixed
      */
-    protected function transaction(Closure $callback)
+    protected function transaction(Closure $callback): mixed
     {
         return $this->manager->getConnection()
                              ->transaction($callback);

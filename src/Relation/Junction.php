@@ -47,32 +47,18 @@ declare(strict_types=1);
 namespace Platine\Orm\Relation;
 
 /**
- * Class Junction
+ * @class Junction
  * @package Platine\Orm\Relation
  */
 class Junction
 {
     /**
-     *
-     * @var array<string, string>
-     */
-    private array $columns = [];
-
-    /**
-     * The name of junction table
-     * @var string
-     */
-    private string $table;
-
-    /**
      * Create new instance
      * @param string $table
      * @param array<string, string> $columns
      */
-    public function __construct(string $table, array $columns)
+    public function __construct(protected string $table, protected array $columns)
     {
-        $this->table = $table;
-        $this->columns = $columns;
     }
 
     /**

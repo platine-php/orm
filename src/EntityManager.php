@@ -61,12 +61,6 @@ use RuntimeException;
 class EntityManager
 {
     /**
-     * The connection
-     * @var Connection
-     */
-    protected Connection $connection;
-
-    /**
      * The date format
      * @var string
      */
@@ -82,9 +76,8 @@ class EntityManager
      * Create new instance
      * @param Connection $connection
      */
-    public function __construct(Connection $connection)
+    public function __construct(protected Connection $connection)
     {
-        $this->connection = $connection;
         $this->dateFormat = $connection->getDriver()->getDateFormat();
     }
 
@@ -131,16 +124,13 @@ class EntityManager
             $reflection = new ReflectionClass($entityClass);
         } catch (ReflectionException $ex) {
             throw new RuntimeException(
-                sprintf(
-                    'Error when build the mapper for entity [%s]',
-                    $entityClass
-                ),
+                sprintf('Error when build the mapper for entity [%s]', $entityClass),
                 0,
                 $ex
             );
         }
 
-        if (!$reflection->isSubclassOf(Entity::class)) {
+        if ($reflection->isSubclassOf(Entity::class) === false) {
             throw new RuntimeException(sprintf(
                 '[%s] must extend [%s]',
                 $entityClass,

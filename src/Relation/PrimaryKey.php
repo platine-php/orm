@@ -49,13 +49,14 @@ namespace Platine\Orm\Relation;
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\Proxy;
+use Stringable;
 
 /**
  * @class PrimaryKey
  * @package Platine\Orm\Relation
  * @template TEntity as Entity
  */
-class PrimaryKey
+class PrimaryKey implements Stringable
 {
     /**
      *
@@ -75,7 +76,7 @@ class PrimaryKey
      */
     public function __construct(string ...$columns)
     {
-        $this->columns = $columns;
+        $this->columns = array_values($columns);
         $this->composite = count($columns) > 1;
     }
 
@@ -104,7 +105,7 @@ class PrimaryKey
      *
      * @return mixed|array<string, mixed>|null
      */
-    public function getValue(array $columns, bool $map = false)
+    public function getValue(array $columns, bool $map = false): mixed
     {
         if (!$this->composite && !$map) {
             return isset($columns[$this->columns[0]])
@@ -130,7 +131,7 @@ class PrimaryKey
      *
      * @return mixed|array<string, mixed>|null
      */
-    public function getValueFromDataMapper(DataMapper $mapper, bool $map = false)
+    public function getValueFromDataMapper(DataMapper $mapper, bool $map = false): mixed
     {
         return $this->getValue($mapper->getRawColumns(), $map);
     }
@@ -141,7 +142,7 @@ class PrimaryKey
      * @param bool $map
      * @return mixed|array<string, mixed>|null
      */
-    public function getValueFromEntity(Entity $entity, bool $map = false)
+    public function getValueFromEntity(Entity $entity, bool $map = false): mixed
     {
         $columns = Proxy::instance()->getEntityColumns($entity);
         return $this->getValue($columns, $map);

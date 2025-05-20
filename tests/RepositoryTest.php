@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Platine\Test\Orm;
 
 use Platine\Database\Query\Where;
+use Platine\Database\Query\WhereStatement;
 use Platine\Dev\PlatineTestCase;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
@@ -76,7 +77,7 @@ class RepositoryTest extends PlatineTestCase
 
         $eq->expects($this->exactly(1))
                 ->method('with')
-                ->with($with, $immadiate)
+                ->with([$with], $immadiate)
                 ->will($this->returnSelf());
 
         $entityClass = get_class($this->getEntityInstance([]));
@@ -240,7 +241,7 @@ class RepositoryTest extends PlatineTestCase
                 ->with($entityClass);
 
         $e = new Repository($manager, $entityClass);
-        $res = $e->filters(['foo' => 1])->find(1);
+        $res = $e->filters('foo')->find(1);
         $this->assertNull($res);
 
         //Already reset after each query
@@ -319,9 +320,10 @@ class RepositoryTest extends PlatineTestCase
 
     public function testFindBy(): void
     {
-        $where = $this->getMockBuilder(Where::class)
-                            ->disableOriginalConstructor()
-                            ->getMock();
+        $ws = $this->getMockInstance(WhereStatement::class);
+        $where = $this->getMockInstance(Where::class, [
+            'is' => $ws,
+        ]);
 
         $eq = $this->getMockBuilder(EntityQuery::class)
                             ->disableOriginalConstructor()
@@ -355,9 +357,10 @@ class RepositoryTest extends PlatineTestCase
 
     public function testFindAllBy(): void
     {
-        $where = $this->getMockBuilder(Where::class)
-                            ->disableOriginalConstructor()
-                            ->getMock();
+        $ws = $this->getMockInstance(WhereStatement::class);
+        $where = $this->getMockInstance(Where::class, [
+            'is' => $ws,
+        ]);
 
         $eq = $this->getMockBuilder(EntityQuery::class)
                             ->disableOriginalConstructor()
@@ -1171,6 +1174,68 @@ class RepositoryTest extends PlatineTestCase
 
         $this->assertTrue($e->save($entity));
         $this->assertEquals(2, $handlerValue);
+    }
+
+    public function testUpdateWithEventHandlersResultFailed(): void
+    {
+        $eq = $this->getMockBuilder(EntityQuery::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $entityClass = get_class($this->getEntityInstance([]));
+
+           $cnx = $this->getMockInstance(Connection::class, [
+               'transaction' => false,
+           ]);
+
+
+        $cnx->expects($this->any())
+                ->method('count')
+                ->will($this->returnValue(12));
+
+        $primaryKey = $this->getMockBuilder(PrimaryKey::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $primaryKey->expects($this->any())
+                ->method('columns')
+                ->will($this->returnValue(['id']));
+
+        $primaryKey->expects($this->any())
+                ->method('getValue')
+                ->will($this->returnValue(['id' => 1]));
+
+        $handlerValue = 1;
+
+        $entityMapper = $this->getEntityMapper([
+            'getPrimaryKey' => $primaryKey,
+            'getTable' => 'my_table',
+            'hasTimestamp' => true,
+            'getTimestampColumns' => ['c_at','u_at'],
+            'getEventHandlers' => ['update' => [
+                function () use (&$handlerValue) {
+                    $handlerValue = 2;
+                }
+            ]]
+        ], []);
+
+        $manager = $this->getEntityManager([
+            'query' => $eq,
+            'getConnection' => $cnx,
+            'getEntityMapper' => $entityMapper,
+            'getDateFormat' => 'Y-m',
+        ], []);
+
+
+
+        $e = new Repository($manager, $entityClass);
+
+        $entity = $this->getEntityInstance([], $manager, $entityMapper);
+
+        $entity->name = 'baz';
+
+        $this->assertFalse($e->save($entity));
+        $this->assertEquals(1, $handlerValue);
     }
 
     public function testUpdateNotModified(): void

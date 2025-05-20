@@ -113,7 +113,7 @@ interface DataMapperInterface
      *
      * @return mixed
      */
-    public function getColumn(string $name);
+    public function getColumn(string $name): mixed;
 
     /**
      * Set the value for the given column
@@ -122,7 +122,7 @@ interface DataMapperInterface
      *
      * @return void
      */
-    public function setColumn(string $name, $value): void;
+    public function setColumn(string $name, mixed $value): void;
 
     /**
      * Clear the value for the given column
@@ -140,7 +140,7 @@ interface DataMapperInterface
      *
      * @return void
      */
-    public function setRawColumn(string $name, $value): void;
+    public function setRawColumn(string $name, mixed $value): void;
 
     /**
      * Return the value for the given relation
@@ -149,7 +149,7 @@ interface DataMapperInterface
      *
      * @return mixed
      */
-    public function getRelated(string $name, callable $callback = null);
+    public function getRelated(string $name, callable $callback = null): mixed;
 
     /**
      * Set the value for the given relation

@@ -52,17 +52,18 @@ use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\DataMapperInterface;
 use Platine\Orm\Mapper\EntityMapper;
 use Platine\Orm\Mapper\EntityMapperInterface;
+use Stringable;
 
 /**
  * @class Entity
  * @package Platine\Orm
  * @template TEntity as Entity
  */
-abstract class Entity implements JsonSerializable
+abstract class Entity implements JsonSerializable, Stringable
 {
     /**
      * The instance of data mapper
-     * @var DataMapper<TEntity> |null
+     * @var DataMapper<TEntity>|null
      */
     private ?DataMapper $dataMapper = null;
 
@@ -103,7 +104,7 @@ abstract class Entity implements JsonSerializable
      * Convert entity to JSON array
      * @return array<string, mixed>
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $rawColumns = $this->mapper()->getRawColumns();
         $data = [];
@@ -130,7 +131,7 @@ abstract class Entity implements JsonSerializable
      * @param string $name
      * @return mixed
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         if ($this->mapper()->hasRelation($name)) {
             return $this->mapper()->getRelated($name);
@@ -152,7 +153,7 @@ abstract class Entity implements JsonSerializable
      * @param mixed $value
      * @return void
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, mixed $value): void
     {
         if ($this->mapper()->hasRelation($name)) {
             if (is_array($value)) {
@@ -172,7 +173,7 @@ abstract class Entity implements JsonSerializable
      * @param string $name
      * @return bool
      */
-    public function __isset(string $name)
+    public function __isset(string $name): bool
     {
         return $this->mapper()->hasRelation($name)
                 || $this->mapper()->hasColumn($name);
@@ -181,9 +182,9 @@ abstract class Entity implements JsonSerializable
     /**
      * Shortcut to DataMapper clearColumn
      * @param string $name
-     * @return bool
+     * @return void
      */
-    public function __unset(string $name)
+    public function __unset(string $name): void
     {
         $this->mapper()->clearColumn($name, true);
     }
@@ -216,7 +217,10 @@ abstract class Entity implements JsonSerializable
     final protected function mapper(): DataMapperInterface
     {
         if ($this->dataMapper === null) {
-            $this->dataMapper = new DataMapper(...$this->dataMapperArgs);
+            /** @var DataMapper<TEntity> $dataMapper */
+            $dataMapper = new DataMapper(...$this->dataMapperArgs);
+
+            $this->dataMapper = $dataMapper;
         }
 
         return $this->dataMapper;

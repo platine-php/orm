@@ -174,7 +174,6 @@ abstract class ShareRelation extends Relation
         foreach ($this->junction->columns() as $pkColumn => $fkColumn) {
             $values[$fkColumn] = $columns[$pkColumn];
         }
-
         $cmd = new Delete($manager->getConnection(), $this->junction->table());
 
         foreach ($values as $column => $value) {
@@ -188,10 +187,15 @@ abstract class ShareRelation extends Relation
      * {@inheritedoc}
      * @param EntityManager<TEntity> $manager
      * @param EntityMapper<TEntity> $owner
+     * @param array<string, mixed> $options
+     *
      * @return RelationLoader<TEntity>
      */
-    public function getLoader(EntityManager $manager, EntityMapper $owner, array $options): RelationLoader
-    {
+    public function getLoader(
+        EntityManager $manager,
+        EntityMapper $owner,
+        array $options
+    ): RelationLoader {
         $related = $manager->getEntityMapper($this->entityClass);
 
         if ($this->junction === null) {
@@ -280,7 +284,7 @@ abstract class ShareRelation extends Relation
         $foreignKeys = $this->foreignKey->getValue($ids, true);
         if (is_array($foreignKeys)) {
             foreach ($foreignKeys as $fkColumn => $fkValue) {
-                $select->where($junctionTable . '.' . $fkColumn)->in($fkValue);
+                $select->where($junctionTable . '.' . $fkColumn)->in([$fkValue]);
             }
         }
 
@@ -298,20 +302,25 @@ abstract class ShareRelation extends Relation
 
         $select->with($options['with'], $options['immediate']);
 
-        return new RelationLoader(
+        /** @var RelationLoader<TEntity> $loader */
+        $loader = new RelationLoader(
             $select,
             $linkKey,
             false,
             $this->hasMany,
             $options['immediate']
         );
+
+        return $loader;
     }
 
     /**
      * {@inheritedoc}
      * @param DataMapper<TEntity> $mapper
+     *
+     * @return TEntity|array<TEntity>|null
      */
-    public function getResult(DataMapper $mapper, ?callable $callback = null)
+    public function getResult(DataMapper $mapper, ?callable $callback = null): Entity|array|null
     {
         $manager = $mapper->getEntityManager();
         $owner = $mapper->getEntityMapper();
@@ -405,9 +414,17 @@ abstract class ShareRelation extends Relation
             }
         }
 
-        return $this->hasMany
-                ? $select->all()
-                : $select->get();
+        if ($this->hasMany) {
+            /** @var TEntity[] $results */
+            $results = $select->all();
+
+            return $results;
+        }
+
+        /** @var TEntity|null $result */
+        $result = $select->get();
+
+        return $result;
     }
 
     /**

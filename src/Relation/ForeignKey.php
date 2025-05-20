@@ -46,11 +46,13 @@ declare(strict_types=1);
 
 namespace Platine\Orm\Relation;
 
+use Stringable;
+
 /**
  * @class ForeignKey
  * @package Platine\Orm\Relation
  */
-class ForeignKey
+class ForeignKey implements Stringable
 {
     /**
      *
@@ -99,7 +101,7 @@ class ForeignKey
      *
      * @return mixed|array<string, mixed>|null
      */
-    public function getValue(array $columns, bool $map = false)
+    public function getValue(array $columns, bool $map = false): mixed
     {
         if (!$map && !$this->composite) {
             $column = array_keys($this->columns);
@@ -127,7 +129,7 @@ class ForeignKey
      *
      * @return mixed|array<string, mixed>|null
      */
-    public function getInverseValue(array $columns, bool $map = false)
+    public function getInverseValue(array $columns, bool $map = false): mixed
     {
         if (!$map && !$this->composite) {
             $column = array_values($this->columns);
@@ -154,7 +156,7 @@ class ForeignKey
      *
      * @return mixed|array<string, mixed>|null
      */
-    public function extractValue(array $columns, bool $map = false)
+    public function extractValue(array $columns, bool $map = false): mixed
     {
         if (!$map && !$this->composite) {
             $column = array_values($this->columns);

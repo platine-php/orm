@@ -46,6 +46,7 @@ declare(strict_types=1);
 
 namespace Platine\Orm\Relation;
 
+use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
 use Platine\Orm\Mapper\DataMapper;
 use Platine\Orm\Mapper\EntityMapper;
@@ -53,7 +54,7 @@ use Platine\Orm\Mapper\EntityMapper;
 /**
  * @class Relation
  * @package Platine\Orm\Relation
- * @template TEntity as \Platine\Orm\Entity
+ * @template TEntity as Entity
  */
 abstract class Relation
 {
@@ -64,32 +65,20 @@ abstract class Relation
     protected $queryCallback = null;
 
     /**
-     * The entity class
-     * @var class-string<TEntity>
-     */
-    protected string $entityClass;
-
-    /**
-     * The relation foreign key
-     * @var ForeignKey|null
-     */
-    protected ?ForeignKey $foreignKey = null;
-
-    /**
      * Create new instance
      * @param class-string<TEntity> $entityClass
      * @param ForeignKey|null $foreignKey
      */
-    public function __construct(string $entityClass, ?ForeignKey $foreignKey = null)
-    {
-        $this->entityClass = $entityClass;
-        $this->foreignKey = $foreignKey;
+    public function __construct(
+        protected string $entityClass,
+        protected ?ForeignKey $foreignKey = null
+    ) {
     }
 
     /**
      * Set query callback
      * @param callable $callback
-     * @return $this<TEntity>
+     * @return Relation<TEntity>
      */
     public function query(callable $callback): self
     {
@@ -109,13 +98,16 @@ abstract class Relation
         EntityManager $manager,
         EntityMapper $owner,
         array $options
-    );
+    ): mixed;
 
     /**
      * @param DataMapper<TEntity> $mapper
      * @param callable|null $callback
      *
-     * @return mixed
+     * @return TEntity|array<TEntity>|null
      */
-    abstract public function getResult(DataMapper $mapper, ?callable $callback = null);
+    abstract public function getResult(
+        DataMapper $mapper,
+        ?callable $callback = null
+    ): Entity|array|null;
 }

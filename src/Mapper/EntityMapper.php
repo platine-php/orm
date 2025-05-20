@@ -66,12 +66,6 @@ class EntityMapper implements EntityMapperInterface
     protected string $name = '';
 
     /**
-     * The full entity class
-     * @var class-string<TEntity>
-     */
-    protected string $entityClass;
-
-    /**
      * The name of the table
      * @var string
      */
@@ -179,14 +173,13 @@ class EntityMapper implements EntityMapperInterface
      * Create new instance
      * @param class-string<TEntity> $entityClass
      */
-    public function __construct(string $entityClass)
+    public function __construct(protected string $entityClass)
     {
-        $this->entityClass = $entityClass;
     }
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function name(string $name): self
     {
@@ -197,7 +190,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function table(string $table): self
     {
@@ -208,7 +201,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function primaryKey(string ...$primaryKey): self
     {
@@ -219,7 +212,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function primaryKeyGenerator(callable $generator): self
     {
@@ -230,7 +223,7 @@ class EntityMapper implements EntityMapperInterface
 
      /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function sequence(string $sequence): self
     {
@@ -241,7 +234,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function casts(array $columns): self
     {
@@ -252,7 +245,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function fillable(array $columns): self
     {
@@ -263,7 +256,7 @@ class EntityMapper implements EntityMapperInterface
 
      /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function guarded(array $columns): self
     {
@@ -274,7 +267,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function filter(string $name, callable $filter): self
     {
@@ -285,7 +278,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function getter(string $column, callable $getter): self
     {
@@ -296,7 +289,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function setter(string $column, callable $setter): self
     {
@@ -307,7 +300,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function on(string $name, callable $handler): self
     {
@@ -326,14 +319,17 @@ class EntityMapper implements EntityMapperInterface
      */
     public function relation(string $name): RelationFactory
     {
-        return new RelationFactory($name, function ($name, Relation $relation) {
+        /** @var RelationFactory<TEntity> $factory */
+        $factory = new RelationFactory($name, function ($name, Relation $relation) {
             return $this->relations[$name] = $relation;
         });
+
+        return $factory;
     }
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function useSoftDelete(
         bool $value = true,
@@ -347,7 +343,7 @@ class EntityMapper implements EntityMapperInterface
 
     /**
      * {@inheritedoc}
-     * @return $this<TEntity>
+     * @return EntityMapper<TEntity>
      */
     public function useTimestamp(
         bool $value = true,
@@ -376,19 +372,19 @@ class EntityMapper implements EntityMapperInterface
     public function getName(): string
     {
         if (empty($this->name)) {
-            $name = $this->entityClass;
+            $entityClass = $this->entityClass;
 
-            $pos = strrpos($name, '\\');
+            $pos = strrpos($entityClass, '\\');
 
             if ($pos !== false) {
-                $name = substr($name, $pos + 1);
+                $entityClass = substr($entityClass, $pos + 1);
             }
 
-            $name = preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $name);
+            $name = preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $entityClass);
 
             if ($name !== null) {
-                $name = strtolower($name);
-                $name = str_replace('-', '_', $name);
+                $nameLower = strtolower($name);
+                $name = str_replace('-', '_', $nameLower);
                 $this->name = $name;
             }
         }

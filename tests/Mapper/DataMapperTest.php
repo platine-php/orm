@@ -20,6 +20,7 @@ use Platine\Orm\Relation\BelongsTo;
 use Platine\Orm\Relation\HasOne;
 use Platine\Orm\Relation\PrimaryKey;
 use Platine\Orm\Relation\ShareOne;
+use Platine\Test\Fixture\Orm\MyEntity;
 use RuntimeException;
 use stdClass;
 
@@ -176,7 +177,7 @@ class DataMapperTest extends PlatineTestCase
 
     public function testGetRelatedCachedSimple(): void
     {
-        $related = 123;
+        $related = $this->getMockInstance(MyEntity::class);
 
         $bt = $this->getMockBuilder(BelongsTo::class)
                             ->disableOriginalConstructor()
@@ -354,7 +355,7 @@ class DataMapperTest extends PlatineTestCase
 
     public function testGetRelatedUsingLoaderCache(): void
     {
-        $related = 123;
+        $related = $this->getMockInstance(MyEntity::class);
 
         $bt = $this->getMockBuilder(BelongsTo::class)
                             ->disableOriginalConstructor()

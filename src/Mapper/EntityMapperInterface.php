@@ -58,21 +58,21 @@ interface EntityMapperInterface
     /**
      * The name of the entity
      * @param string $name
-     * @return $this
+     * @return self<TEntity>
      */
     public function name(string $name): self;
 
     /**
      * The name of the associated table
      * @param string $table
-     * @return $this
+     * @return self<TEntity>
      */
     public function table(string $table): self;
 
     /**
      * The name or list of primary key name
      * @param string ...$primaryKey
-     * @return $this
+     * @return self<TEntity>
      */
     public function primaryKey(string ...$primaryKey): self;
 
@@ -91,14 +91,14 @@ interface EntityMapperInterface
      *   'column_n' => 'value_n'
      * )
      * @param callable $generator
-     * @return $this
+     * @return self<TEntity>
      */
     public function primaryKeyGenerator(callable $generator): self;
 
     /**
      * The name of the sequence
      * @param string $sequence
-     * @return $this
+     * @return self<TEntity>
      */
     public function sequence(string $sequence): self;
 
@@ -110,7 +110,7 @@ interface EntityMapperInterface
      *  }
      * @param string $column
      * @param callable $getter
-     * @return $this
+     * @return self<TEntity>
      */
     public function getter(string $column, callable $getter): self;
 
@@ -122,7 +122,7 @@ interface EntityMapperInterface
      *  }
      * @param string $column
      * @param callable $setter
-     * @return $this
+     * @return self<TEntity>
      */
     public function setter(string $column, callable $setter): self;
 
@@ -136,7 +136,7 @@ interface EntityMapperInterface
     /**
      * Set each columns the type for get and set
      * @param array<string, string> $columns
-     * @return $this
+     * @return self<TEntity>
      */
     public function casts(array $columns): self;
 
@@ -145,7 +145,7 @@ interface EntityMapperInterface
      * @param bool $value
      * @param string $column the name of column to use
      * Note: $column Must cast to '?date'
-     * @return $this
+     * @return self<TEntity>
      */
     public function useSoftDelete(
         bool $value = true,
@@ -159,7 +159,7 @@ interface EntityMapperInterface
      * @param string $updatedAt
      *
      * Note: $updatedAt must cast to '?date'
-     * @return $this
+     * @return self<TEntity>
      */
     public function useTimestamp(
         bool $value = true,
@@ -170,14 +170,14 @@ interface EntityMapperInterface
     /**
      * List of column to accept mass assignement
      * @param array<int, string> $columns
-     * @return $this
+     * @return self<TEntity>
      */
     public function fillable(array $columns): self;
 
     /**
      * List of column to be guarded
      * @param array<int, string> $columns
-     * @return $this
+     * @return self<TEntity>
      */
     public function guarded(array $columns): self;
 
@@ -190,7 +190,7 @@ interface EntityMapperInterface
      *  }
      * @param string $name
      * @param callable $filter
-     * @return $this
+     * @return self<TEntity>
      */
     public function filter(string $name, callable $filter): self;
 
@@ -203,7 +203,7 @@ interface EntityMapperInterface
      *  }
      * @param string $name
      * @param callable $handler
-     * @return $this
+     * @return self<TEntity>
      */
     public function on(string $name, callable $handler): self;
 }

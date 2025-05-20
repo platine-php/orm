@@ -75,7 +75,12 @@ class EntityTest extends PlatineTestCase
 
     public function testJsonRealEntity(): void
     {
-        $eMapper = $this->getEntityMapper([], []);
+        $eMapper = $this->getEntityMapper(
+            [
+
+            ],
+            []
+        );
         $eManager = $this->getEntityManager([], []);
         $columns = [];
         $loaders = [];
@@ -210,7 +215,7 @@ class EntityTest extends PlatineTestCase
 
     public function testGetUsingRelation(): void
     {
-        $related = 123;
+        $related = $this->getMockInstance(MyEntity::class);
 
         $bt = $this->getMockBuilder(BelongsTo::class)
                             ->disableOriginalConstructor()

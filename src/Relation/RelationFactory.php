@@ -56,26 +56,12 @@ use Closure;
 class RelationFactory
 {
     /**
-     * The relation name
-     * @var string
-     */
-    protected string $name;
-
-    /**
-     *
-     * @var Closure
-     */
-    protected Closure $callback;
-
-    /**
      * Create new instance
      * @param string $name
      * @param Closure $callback
      */
-    public function __construct(string $name, Closure $callback)
+    public function __construct(protected string $name, protected Closure $callback)
     {
-        $this->name = $name;
-        $this->callback = $callback;
     }
 
     /**

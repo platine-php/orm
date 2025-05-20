@@ -54,7 +54,7 @@ use Platine\Database\Query\HavingStatement;
 use Platine\Database\Query\QueryStatement;
 
 /**
- * Class Query
+ * @class Query
  * @package Platine\Orm\Query
  */
 class Query extends BaseStatement
@@ -91,7 +91,7 @@ class Query extends BaseStatement
 
 
     /**
-     *
+     * Create new instance
      * @param QueryStatement|null $queryStatement
      */
     public function __construct(QueryStatement $queryStatement = null)
@@ -103,7 +103,7 @@ class Query extends BaseStatement
     /**
      * Clone the object
      */
-    public function __clone()
+    public function __clone(): void
     {
         parent::__clone();
         $this->havingStatement = new HavingStatement($this->queryStatement);
@@ -139,7 +139,7 @@ class Query extends BaseStatement
      * @param bool $immediate
      * @return $this
      */
-    public function with($value, bool $immediate = false): self
+    public function with(string|array $value, bool $immediate = false): self
     {
         if (!is_array($value)) {
             $value = [$value];
@@ -168,7 +168,7 @@ class Query extends BaseStatement
      * @param string|Expression|Closure|string[]|Expression[]|Closure[] $columns
      * @return $this
      */
-    public function groupBy($columns): self
+    public function groupBy(string|Expression|Closure|array $columns): self
     {
         if (!is_array($columns)) {
             $columns = [$columns];
@@ -182,10 +182,10 @@ class Query extends BaseStatement
     /**
      *
      * @param string|Expression|Closure $column
-     * @param Closure $value
+     * @param Closure|null $value
      * @return $this
      */
-    public function having($column, Closure $value = null): self
+    public function having(string|Expression|Closure $column, Closure $value = null): self
     {
         $this->getHavingStatement()->having($column, $value);
 
@@ -195,10 +195,10 @@ class Query extends BaseStatement
     /**
      *
      * @param string|Expression|Closure $column
-     * @param Closure $value
+     * @param Closure|null $value
      * @return $this
      */
-    public function orHaving($column, Closure $value = null): self
+    public function orHaving(string|Expression|Closure $column, Closure $value = null): self
     {
         $this->getHavingStatement()->orHaving($column, $value);
 
@@ -211,8 +211,10 @@ class Query extends BaseStatement
      * @param string $order
      * @return $this
      */
-    public function orderBy($columns, string $order = 'ASC'): self
-    {
+    public function orderBy(
+        string|Closure|Expression|array $columns,
+        string $order = 'ASC'
+    ): self {
         if (!is_array($columns)) {
             $columns = [$columns];
         }
@@ -260,7 +262,7 @@ class Query extends BaseStatement
      * @param string|string[]|Expression|Expression[]|Closure|Closure[] $columns
      * @return void
      */
-    protected function select($columns = []): void
+    protected function select(string|Expression|Closure|array $columns = []): void
     {
         $exp = new ColumnExpression($this->getQueryStatement());
         if ($columns instanceof Closure) {
@@ -312,6 +314,7 @@ class Query extends BaseStatement
                     $extra[$name] = [];
                 }
 
+                /** @var array<string, mixed> $tmp */
                 $tmp = &$extra[$name];
 
                 if (isset($tmp[$fullName]) || in_array($fullName, $tmp)) {
