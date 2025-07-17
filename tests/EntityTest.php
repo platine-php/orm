@@ -73,6 +73,54 @@ class EntityTest extends PlatineTestCase
         $this->assertEquals('{"foo":"bar"}', json_encode($e));
     }
 
+    public function testClone(): void
+    {
+        $eMapper = $this->getEntityMapper(
+            [
+
+            ],
+            []
+        );
+        $eManager = $this->getEntityManager([], []);
+        $columns = [];
+        $loaders = [];
+        $readOnly = false;
+        $isNew = false;
+
+        $e = new MyEntity(
+            $eManager,
+            $eMapper,
+            $columns,
+            $loaders,
+            $readOnly,
+            $isNew
+        );
+
+        // By reference
+        $e->name = 'foo';
+        $this->assertEquals('foo', $e->name);
+
+        $r = $e;
+        $this->assertEquals('foo', $r->name);
+        $e->name = 'bar';
+
+        $this->assertEquals('bar', $e->name);
+        $this->assertEquals('bar', $r->name);
+
+        // By copy
+        $c = clone $e;
+        $this->assertEquals('bar', $e->name);
+        $this->assertEquals('bar', $c->name);
+
+        $e->name = 'baz';
+        $this->assertEquals('baz', $e->name);
+        $this->assertEquals('bar', $c->name);
+
+        $c->name = 'fooz';
+        $this->assertEquals('baz', $e->name);
+        $this->assertEquals('fooz', $c->name);
+    }
+
     public function testJsonRealEntity(): void
     {
         $eMapper = $this->getEntityMapper(

@@ -61,7 +61,7 @@ interface RepositoryInterface
      * Return the instance of EntityQuery
      * @param string|array<int, string>|array<string, Closure> $with
      * @param bool $immediate
-     * @return EntityQuery<TEntity>
+     * @return EntityQuery
      */
     public function query(string|array $with = [], bool $immediate = false): EntityQuery;
 
@@ -69,7 +69,7 @@ interface RepositoryInterface
      * Load with relation
      * @param string|array<int, string>|array<string, Closure> $with
      * @param bool $immediate
-     * @return self<TEntity>
+     * @return $this
      */
     public function with(string|array $with, bool $immediate = false): self;
 
@@ -77,7 +77,7 @@ interface RepositoryInterface
      * Set order
      * @param string|Closure|Expression|string[]|Expression[]|Closure[] $columns
      * @param string $order
-     * @return self<TEntity>
+     * @return $this
      */
     public function orderBy(
         string|Closure|Expression|array $columns,
@@ -88,14 +88,14 @@ interface RepositoryInterface
      * Add limit and offset
      * @param int $offset
      * @param int $limit
-     * @return self<TEntity>
+     * @return $this
      */
     public function limit(int $offset, int $limit): self;
 
     /**
      * Apply an filters on the query
      * @param string|array<string, mixed> $filters
-     * @return self<TEntity>
+     * @return $this
      */
     public function filters(string|array $filters = []): self;
 

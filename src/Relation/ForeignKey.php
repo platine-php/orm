@@ -103,7 +103,7 @@ class ForeignKey implements Stringable
      */
     public function getValue(array $columns, bool $map = false): mixed
     {
-        if (!$map && !$this->composite) {
+        if ($map === false && $this->composite === false) {
             $column = array_keys($this->columns);
 
             return isset($columns[$column[0]])
@@ -131,7 +131,7 @@ class ForeignKey implements Stringable
      */
     public function getInverseValue(array $columns, bool $map = false): mixed
     {
-        if (!$map && !$this->composite) {
+        if ($map === false && $this->composite === false) {
             $column = array_values($this->columns);
 
             return isset($columns[$column[0]])
@@ -158,7 +158,7 @@ class ForeignKey implements Stringable
      */
     public function extractValue(array $columns, bool $map = false): mixed
     {
-        if (!$map && !$this->composite) {
+        if ($map === false && $this->composite === false) {
             $column = array_values($this->columns);
 
             return isset($columns[$column[0]])

@@ -162,7 +162,6 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
-     * @return self<TEntity>
      */
     public function with(string|array $with, bool $immediate = false): self
     {
@@ -177,7 +176,6 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
-     * @return self<TEntity>
      */
     public function orderBy(
         string|Closure|Expression|array $columns,
@@ -191,7 +189,6 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
-     * @return self<TEntity>
      */
     public function limit(int $offset, int $limit): self
     {
@@ -203,7 +200,6 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
-     * @return self<TEntity>
      */
     public function filters(string|array $filters = []): self
     {
@@ -218,6 +214,7 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
+     * @return TEntity[]
      */
     public function all(array $columns = []): array
     {
@@ -243,6 +240,7 @@ class Repository implements RepositoryInterface
 
     /**
      * {@inheritedoc}
+     * @return TEntity|null
      */
     public function find(array|string|int|float $id): ?Entity
     {

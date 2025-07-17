@@ -101,6 +101,17 @@ abstract class Entity implements JsonSerializable, Stringable
     }
 
     /**
+     * Clone the object
+     * @return void
+     */
+    public function __clone(): void
+    {
+        if ($this->dataMapper !== null) {
+            $this->dataMapper = clone $this->dataMapper;
+        }
+    }
+
+    /**
      * Convert entity to JSON array
      * @return array<string, mixed>
      */

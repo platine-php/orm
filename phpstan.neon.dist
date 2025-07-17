@@ -4,3 +4,6 @@ parameters:
         - src
     universalObjectCratesClasses:
         - Platine\Orm\Entity
+    ignoreErrors:
+        -
+            identifier: missingType.generics
