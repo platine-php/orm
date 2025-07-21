@@ -483,9 +483,9 @@ class DataMapper implements DataMapperInterface
         $fillable = $this->mapper->getFillable();
         $guarded = $this->mapper->getGuarded();
 
-        if (!empty($fillable)) {
+        if (count($fillable) > 0) {
             $columns = array_intersect_key($columns, array_flip($fillable));
-        } elseif (!empty($guarded)) {
+        } elseif (count($guarded) > 0) {
             $columns = array_diff_key($columns, array_flip($guarded));
         }
 
@@ -502,7 +502,7 @@ class DataMapper implements DataMapperInterface
     public function markAsSaved(mixed $id): bool
     {
         $primaryKey = $this->mapper->getPrimaryKey();
-        if (!$primaryKey->isComposite()) {
+        if ($primaryKey->isComposite() === false) {
             $columns = $primaryKey->columns();
             $this->rawColumns[$columns[0]] = $id;
         } else {
@@ -515,7 +515,7 @@ class DataMapper implements DataMapperInterface
         $this->isNew = false;
         $this->modified = [];
 
-        if (!empty($this->pendingLinks)) {
+        if (count($this->pendingLinks) > 0) {
             $this->executePendingLinkage();
         }
 
@@ -537,7 +537,11 @@ class DataMapper implements DataMapperInterface
 
         $this->modified = [];
 
-        if (!empty($this->pendingLinks)) {
+        // some relation already loaded still in the cache
+        // so force reload it
+        $this->relations = [];
+
+        if (count($this->pendingLinks) > 0) {
             $this->executePendingLinkage();
         }
 
