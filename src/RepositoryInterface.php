@@ -171,4 +171,20 @@ interface RepositoryInterface
      * @return TEntity[]
      */
     public function findAllBy(array $conditions): array;
+
+    /**
+     * Whether the entity with given fields data exist
+     * @param array<string, mixed> $conditions
+     * @return bool
+     */
+    public function exists(array $conditions): bool;
+
+    /**
+     * Whether the entity with given fields data exist only if not equal to given value
+     * @param array<string, mixed> $conditions
+     * @param mixed $value
+     * @param string $field
+     * @return bool
+     */
+    public function existIgnore(array $conditions, mixed $value, string $field = 'id'): bool;
 }

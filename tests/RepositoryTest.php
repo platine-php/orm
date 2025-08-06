@@ -318,6 +318,76 @@ class RepositoryTest extends PlatineTestCase
         $this->assertEquals(0, $this->getPropertyValue(Repository::class, $e, 'limit'));
     }
 
+    public function testExists(): void
+    {
+        $entity = $this->getEntityInstance();
+
+        $ws = $this->getMockInstance(WhereStatement::class);
+        $where = $this->getMockInstance(Where::class, [
+            'is' => $ws,
+        ]);
+
+        $eq = $this->getMockBuilder(EntityQuery::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $eq->expects($this->exactly(1))
+            ->method('get')
+            ->will($this->returnValue($entity));
+
+        $eq->expects($this->exactly(1))
+            ->method('where')
+            ->will($this->returnValue($where));
+
+        $entityClass = get_class($entity);
+        $manager = $this->getEntityManager([
+            'query' => $eq
+        ], []);
+
+        $manager->expects($this->exactly(1))
+                ->method('query')
+                ->with($entityClass);
+
+        $e = new Repository($manager, $entityClass);
+        $res = $e->exists(['id' => 1]);
+        $this->assertTrue($res);
+    }
+
+    public function testExistIgnore(): void
+    {
+        $entity = $this->getEntityInstance(['id' => 3]);
+
+        $ws = $this->getMockInstance(WhereStatement::class);
+        $where = $this->getMockInstance(Where::class, [
+            'is' => $ws,
+        ]);
+
+        $eq = $this->getMockBuilder(EntityQuery::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $eq->expects($this->exactly(1))
+            ->method('get')
+            ->will($this->returnValue($entity));
+
+        $eq->expects($this->exactly(1))
+            ->method('where')
+            ->will($this->returnValue($where));
+
+        $entityClass = get_class($entity);
+        $manager = $this->getEntityManager([
+            'query' => $eq
+        ], []);
+
+        $manager->expects($this->exactly(1))
+                ->method('query')
+                ->with($entityClass);
+
+        $e = new Repository($manager, $entityClass);
+        $res = $e->existIgnore(['id' => 1], 1);
+        $this->assertTrue($res);
+    }
+
     public function testFindBy(): void
     {
         $ws = $this->getMockInstance(WhereStatement::class);

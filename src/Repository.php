@@ -472,6 +472,24 @@ class Repository implements RepositoryInterface
     }
 
     /**
+     * {@inheritedoc}
+     */
+    public function exists(array $conditions): bool
+    {
+        return $this->findBy($conditions) !== null;
+    }
+
+    /**
+     * {@inheritedoc}
+     */
+    public function existIgnore(array $conditions, mixed $value, string $field = 'id'): bool
+    {
+        $o = $this->findBy($conditions);
+
+        return $o !== null && $o->{$field} != $value; // don't use ===
+    }
+
+    /**
      * Set the filters
      * @param EntityQuery<TEntity> $query
      * @return $this
