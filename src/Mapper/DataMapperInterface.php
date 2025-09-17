@@ -149,7 +149,7 @@ interface DataMapperInterface
      *
      * @return mixed
      */
-    public function getRelated(string $name, callable $callback = null): mixed;
+    public function getRelated(string $name, ?callable $callback = null): mixed;
 
     /**
      * Set the value for the given relation
