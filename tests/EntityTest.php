@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Platine\Test\Orm;
 
+use DateTime;
+use DateTimeZone;
 use Platine\Dev\PlatineTestCase;
 use Platine\Orm\Entity;
 use Platine\Orm\EntityManager;
@@ -155,11 +157,15 @@ class EntityTest extends PlatineTestCase
         $er->name = 'foo';
 
         $e->foo = 'bar';
+        $e->date = new DateTime('2025-09-01', new DateTimeZone('Africa/Bangui'));
         $e->relation = $er;
 
-        $this->assertCount(2, $e->jsonSerialize());
+        $this->assertCount(3, $e->jsonSerialize());
         $this->assertArrayHasKey('foo', $e->jsonSerialize());
-        $this->assertEquals('{"foo":"bar","relation":{"name":"foo"}}', json_encode($e));
+        $this->assertEquals(
+            '{"foo":"bar","date":"2025-09-01T00:00:00+01:00","relation":{"name":"foo"}}',
+            json_encode($e)
+        );
     }
 
     public function testDataMapperInstance(): void

@@ -46,6 +46,7 @@ declare(strict_types=1);
 
 namespace Platine\Orm;
 
+use DateTime;
 use JsonSerializable;
 use Platine\Orm\Exception\PropertyNotFoundException;
 use Platine\Orm\Mapper\DataMapper;
@@ -128,7 +129,11 @@ abstract class Entity implements JsonSerializable, Stringable
                     $data[$name] = $relation;
                 }
             } elseif ($this->mapper()->hasColumn($name)) {
-                $data[$name] = $this->mapper()->getColumn($name);
+                $value = $this->mapper()->getColumn($name);
+                if ($value instanceof DateTime) {
+                    $value = $value->format(DateTime::ATOM);
+                }
+                $data[$name] = $value;
             } else {
                 $data[$name] = $value;
             }
