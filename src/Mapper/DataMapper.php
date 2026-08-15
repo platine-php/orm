@@ -355,7 +355,7 @@ class DataMapper implements DataMapperInterface
      /**
      * {@inheritedoc}
      */
-    public function getRelated(string $name, callable $callback = null)
+    public function getRelated(string $name, ?callable $callback = null)
     {
         if (array_key_exists($name, $this->relations)) {
             return $this->relations[$name];
