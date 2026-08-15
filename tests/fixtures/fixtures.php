@@ -23,6 +23,7 @@ class PDOMock extends PDO
     {
     }
 
+    #[\ReturnTypeWillChange]
     public function lastInsertId($seq = null)
     {
         return 1;

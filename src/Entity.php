@@ -103,6 +103,7 @@ abstract class Entity implements JsonSerializable
      * Convert entity to JSON array
      * @return array<string, mixed>
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $rawColumns = $this->mapper()->getRawColumns();
