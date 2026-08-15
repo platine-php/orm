@@ -94,7 +94,7 @@ class Query extends BaseStatement
      *
      * @param QueryStatement|null $queryStatement
      */
-    public function __construct(QueryStatement $queryStatement = null)
+    public function __construct(?QueryStatement $queryStatement = null)
     {
         parent::__construct($queryStatement);
         $this->havingStatement = new HavingStatement($this->queryStatement);
@@ -182,10 +182,10 @@ class Query extends BaseStatement
     /**
      *
      * @param string|Expression|Closure $column
-     * @param Closure $value
+     * @param Closure|null $value
      * @return $this
      */
-    public function having($column, Closure $value = null): self
+    public function having($column, ?Closure $value = null): self
     {
         $this->getHavingStatement()->having($column, $value);
 
@@ -195,10 +195,10 @@ class Query extends BaseStatement
     /**
      *
      * @param string|Expression|Closure $column
-     * @param Closure $value
+     * @param Closure|null $value
      * @return $this
      */
-    public function orHaving($column, Closure $value = null): self
+    public function orHaving($column, ?Closure $value = null): self
     {
         $this->getHavingStatement()->orHaving($column, $value);
 
