@@ -11,6 +11,7 @@ use Platine\Database\Connection as RealConnection;
 use Platine\Database\ResultSet;
 use Platine\Orm\Entity;
 use Platine\Orm\Mapper\EntityMapperInterface;
+use ReturnTypeWillChange;
 
 class MyEntity extends Entity
 {
@@ -33,6 +34,7 @@ class PDOMock extends PDO
     {
     }
 
+    #[ReturnTypeWillChange]
     public function lastInsertId($seq = null)
     {
         return 1;

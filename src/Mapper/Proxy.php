@@ -84,8 +84,11 @@ class Proxy
         $this->dataMapperArgs = $reflection->getProperty('dataMapperArgs');
         $this->mapperMethod = $reflection->getMethod('mapper');
 
-        $this->dataMapperArgs->setAccessible(true);
-        $this->mapperMethod->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $this->dataMapperArgs->setAccessible(true);
+            $this->mapperMethod->setAccessible(true);
+        }
+        
     }
 
     /**
